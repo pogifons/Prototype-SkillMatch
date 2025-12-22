@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMatch | Employer Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565C0;
+            --primary-light: #4B9FE1;
+            --primary-dark: #0D47A1;
+            --accent: #5CB338;
+            --accent-light: #8BC34A;
+            --secondary: #2E7D32;
+            --background: #F5F7FA;
+            --surface: #ffffff;
+            --text-primary: #1a1d29;
+            --text-secondary: #5c6370;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --success: #5CB338;
+            --danger: #dc2626;
+            --gradient-primary: linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #4B9FE1 100%);
+            --gradient-accent: linear-gradient(135deg, #2E7D32 0%, #5CB338 50%, #8BC34A 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 25px 60px rgba(0,0,0,0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(92, 179, 56, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(21, 101, 192, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(46, 125, 50, 0.1) 0%, transparent 50%);
+            animation: bgRotate 30s linear infinite;
+        }
+
+        @keyframes bgRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--accent);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: var(--primary-light);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            top: 50%;
+            left: 20%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        /* Left Panel - Branding */
+        .branding-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .brand-content {
+            max-width: 480px;
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .brand-logo-icon {
+            width: 72px;
+            height: 72px;
+            background: var(--gradient-accent);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 12px 40px rgba(92, 179, 56, 0.4);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 12px 40px rgba(92, 179, 56, 0.4); }
+            50% { box-shadow: 0 16px 60px rgba(92, 179, 56, 0.6); }
+        }
+
+        .brand-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+        }
+
+        .brand-logo-text span {
+            color: var(--accent-light);
+        }
+
+        .brand-tagline {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .brand-description {
+            font-size: 16px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+            margin-bottom: 48px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(8px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-accent);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .feature-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-text p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Right Panel - Login Form */
+        .login-panel {
+            width: 520px;
+            min-width: 520px;
+            background: var(--surface);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 40px 60px;
+            position: relative;
+            z-index: 2;
+            box-shadow: var(--shadow-xl);
+            animation: slideInRight 0.8s ease;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .tab-switcher {
+            display: flex;
+            background: var(--background);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            margin-bottom: 32px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 50px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--background);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 4px rgba(15, 76, 92, 0.1);
+        }
+
+        .input-wrapper input:focus + i,
+        .input-wrapper input:focus ~ i {
+            color: var(--primary);
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--text-secondary);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-wrapper span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--accent-light);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(92, 179, 56, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(92, 179, 56, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            font-size: 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(15, 76, 92, 0.05);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .login-footer p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .login-footer a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Row */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Verification Section */
+        .verification-info {
+            background: rgba(15, 76, 92, 0.05);
+            border: 1px solid rgba(15, 76, 92, 0.1);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .verification-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verification-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--background);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(15, 76, 92, 0.02);
+        }
+
+        .file-upload i {
+            font-size: 32px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .file-upload p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .file-upload span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Terms Checkbox */
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .terms-checkbox input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+        }
+
+        .terms-checkbox label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .terms-checkbox a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            body {
+                display: block;
+                overflow-y: auto;
+            }
+            
+            .branding-panel {
+                display: none;
+            }
+            
+            .login-panel {
+                width: 100%;
+                max-width: 500px;
+                min-width: auto;
+                margin: 40px auto;
+                border-radius: var(--radius-xl);
+                max-height: none;
+                overflow-y: visible;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .login-panel {
+                margin: 20px;
+                padding: 40px 24px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <!-- Branding Panel -->
+    <div class="branding-panel">
+        <div class="brand-content">
+            <div class="brand-logo">
+                <div class="brand-logo-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="brand-logo-text">Skill<span>Match</span></div>
+            </div>
+            
+            <h2 class="brand-tagline">AI-Powered Job & Skills Matching Portal</h2>
+            <p class="brand-description">Connect with qualified candidates through our intelligent matching system. Leverage prescriptive analytics to make data-driven hiring decisions.</p>
+            
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h4>AI-Powered Matching</h4>
+                        <p>Smart algorithms match candidates to your requirements</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h4>Prescriptive Analytics</h4>
+                        <p>Data-driven insights for better hiring decisions</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-text">
+                        <h4>Secure & Compliant</h4>
+                        <p>Full compliance with Data Privacy Act</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Panel -->
+    <div class="login-panel">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your employer dashboard</p>
+        </div>
+
+        <div class="tab-switcher">
+            <button class="tab-btn active" data-tab="login">Sign In</button>
+            <button class="tab-btn" data-tab="register">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="form-container active" id="loginForm">
+            <form action="employer.html">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" placeholder="Enter your email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <i class="fas fa-lock"></i>
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Sign In
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+
+            <div class="social-login">
+                <button class="social-btn">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-linkedin-in"></i>
+                </button>
+                <button class="social-btn">
+                    <i class="fab fa-microsoft"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-container" id="registerForm">
+            <div class="verification-info">
+                <h4><i class="fas fa-info-circle"></i> Employer Verification Required</h4>
+                <p>To ensure authenticity of job postings, we require business verification documents. Your account will be reviewed within 24-48 hours.</p>
+            </div>
+
+            <form action="employer.html">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="Your company name" required>
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Industry</label>
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="e.g., Technology" required>
+                            <i class="fas fa-industry"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Business Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" placeholder="company@domain.com" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Person</label>
+                        <div class="input-wrapper">
+                            <input type="text" placeholder="Full name" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="input-wrapper">
+                            <input type="tel" placeholder="+63 XXX XXX XXXX" required>
+                            <i class="fas fa-phone"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="registerPassword" placeholder="Create a strong password" required>
+                        <i class="fas fa-lock"></i>
+                        <button type="button" class="toggle-password" onclick="togglePassword('registerPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Business Registration Documents</label>
+                    <div class="file-upload">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload or drag and drop</p>
+                        <span>DTI/SEC Registration, Business Permit (PDF, max 10MB)</span>
+                        <input type="file" hidden>
+                    </div>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I confirm that the information provided is accurate and I consent to data processing in accordance with the Data Privacy Act of 2012.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Create Account
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="login-footer">
+            <p>Need help? <a href="#">Contact Support</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switcher
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                if (btn.dataset.tab === 'login') {
+                    loginForm.classList.add('active');
+                    registerForm.classList.remove('active');
+                } else {
+                    registerForm.classList.add('active');
+                    loginForm.classList.remove('active');
+                }
+            });
+        });
+
+        // Toggle Password Visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.parentElement.querySelector('.toggle-password i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // File Upload Click Handler
+        const fileUpload = document.querySelector('.file-upload');
+        const fileInput = fileUpload.querySelector('input[type="file"]');
+
+        fileUpload.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileUpload.querySelector('p').textContent = e.target.files[0].name;
+                fileUpload.style.borderColor = 'var(--success)';
+                fileUpload.style.background = 'rgba(5, 150, 105, 0.05)';
+            }
+        });
+    </script>
+</body>
+</html>
+

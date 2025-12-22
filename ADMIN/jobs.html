@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMatch | Job Postings Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565C0;
+            --primary-light: #4B9FE1;
+            --primary-dark: #0D47A1;
+            --accent: #5CB338;
+            --accent-light: #8BC34A;
+            --secondary: #2E7D32;
+            --background: #F5F7FA;
+            --surface: #ffffff;
+            --text-primary: #1a1d29;
+            --text-secondary: #5c6370;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --success: #5CB338;
+            --warning: #F9A825;
+            --danger: #dc2626;
+            --gradient-primary: linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #4B9FE1 100%);
+            --gradient-accent: linear-gradient(135deg, #2E7D32 0%, #5CB338 50%, #8BC34A 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 40px rgba(92, 179, 56, 0.2);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(21, 101, 192, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(92, 179, 56, 0.03) 0%, transparent 50%);
+        }
+
+        /* Sidebar - Same as dashboard */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--gradient-primary);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-accent);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-text span {
+            color: var(--accent-light);
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 12px;
+            padding-left: 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: var(--accent-light);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .nav-link i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-link .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 16px;
+        }
+
+        .user-info h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 24px 32px;
+            min-height: 100vh;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-primary {
+            padding: 12px 24px;
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(92, 179, 56, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(92, 179, 56, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 12px 24px;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Filters Bar */
+        .filters-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--surface);
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(15, 76, 92, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .filter-select {
+            padding: 14px 40px 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--surface);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Jobs Grid */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+        }
+
+        .job-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .job-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .job-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .job-icon.tech { background: #dbeafe; color: #2563eb; }
+        .job-icon.design { background: #fce7f3; color: #db2777; }
+        .job-icon.marketing { background: #d1fae5; color: #059669; }
+        .job-icon.finance { background: #fef3c7; color: #d97706; }
+        .job-icon.hr { background: #ede9fe; color: #7c3aed; }
+        .job-icon.admin { background: #e0e7ff; color: #4f46e5; }
+
+        .job-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .job-status.active {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+        }
+
+        .job-status.pending {
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--warning);
+        }
+
+        .job-status.closed {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .job-status.draft {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+
+        .job-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .job-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .job-meta-item i {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .job-tag {
+            padding: 4px 12px;
+            background: var(--background);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .job-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .applicant-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .applicant-avatars {
+            display: flex;
+        }
+
+        .applicant-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -10px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .applicant-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .applicant-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .applicant-count strong {
+            color: var(--text-primary);
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--background);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.edit:hover {
+            background: var(--primary);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(50px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            z-index: 1;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--background);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--background);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--surface);
+            box-shadow: 0 0 0 4px rgba(15, 76, 92, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .skills-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--background);
+            min-height: 56px;
+        }
+
+        .skill-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-tag button:hover {
+            opacity: 1;
+        }
+
+        .skills-input input {
+            flex: 1;
+            min-width: 100px;
+            border: none;
+            background: transparent;
+            padding: 4px;
+            font-size: 14px;
+        }
+
+        .skills-input input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .modal-footer {
+            padding: 20px 32px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            background: var(--surface);
+        }
+
+        .btn-cancel {
+            padding: 12px 24px;
+            background: var(--background);
+            color: var(--text-secondary);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: var(--border);
+        }
+
+        /* AI Suggestions */
+        .ai-suggestion {
+            background: linear-gradient(135deg, rgba(21, 101, 192, 0.05) 0%, rgba(92, 179, 56, 0.05) 100%);
+            border: 1px solid rgba(21, 101, 192, 0.1);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .ai-suggestion-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ai-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-accent);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .ai-suggestion-header h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .ai-suggestion p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .ai-suggestion-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .ai-tag {
+            padding: 4px 10px;
+            background: rgba(15, 76, 92, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tag:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            border: 2px dashed var(--border);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                padding: 16px;
+            }
+            
+            .logo-text,
+            .nav-section-title,
+            .nav-link span,
+            .nav-link .badge,
+            .user-info {
+                display: none;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                padding: 14px;
+            }
+            
+            .user-card {
+                justify-content: center;
+                padding: 10px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="logo-text">Skill<span>Match</span></div>
+        </div>
+
+        <nav>
+            <div class="nav-section">
+                <div class="nav-section-title">Main Menu</div>
+                <a href="employer.html" class="nav-link">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="jobs.html" class="nav-link active">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Job Postings</span>
+                    <span class="badge">12</span>
+                </a>
+                <a href="applicants.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Applicants</span>
+                    <span class="badge">48</span>
+                </a>
+                <a href="training.html" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Training Programs</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Analytics</div>
+                <a href="analytics.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Reports & Insights</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Demographics</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="login.html" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">TC</div>
+                <div class="user-info">
+                    <h4>TechCorp Inc.</h4>
+                    <p>Verified Employer</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Job Postings 💼</h1>
+                <p>Manage your job vacancies and track applicant progress</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-secondary">
+                    <i class="fas fa-download"></i>
+                    Export
+                </button>
+                <button class="btn-primary" id="newJobBtn">
+                    <i class="fas fa-plus"></i>
+                    Post New Job
+                </button>
+            </div>
+        </header>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search job titles, departments...">
+            </div>
+            <select class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending Review</option>
+                <option value="closed">Closed</option>
+                <option value="draft">Draft</option>
+            </select>
+            <select class="filter-select">
+                <option value="">All Departments</option>
+                <option value="it">Information Technology</option>
+                <option value="design">Design</option>
+                <option value="marketing">Marketing</option>
+                <option value="finance">Finance</option>
+                <option value="hr">Human Resources</option>
+            </select>
+            <select class="filter-select">
+                <option value="">All Locations</option>
+                <option value="qc">Quezon City</option>
+                <option value="makati">Makati City</option>
+                <option value="pasig">Pasig City</option>
+                <option value="taguig">Taguig City</option>
+            </select>
+        </div>
+
+        <!-- Jobs Grid -->
+        <div class="jobs-grid">
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon tech">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span class="job-status active">Active</span>
+                </div>
+                <h3>Senior Software Developer</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Information Technology
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Quezon City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">React</span>
+                    <span class="job-tag">Node.js</span>
+                    <span class="job-tag">TypeScript</span>
+                    <span class="job-tag">+3</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <div class="applicant-avatars">
+                            <div class="applicant-avatar">JC</div>
+                            <div class="applicant-avatar">MA</div>
+                            <div class="applicant-avatar">+8</div>
+                        </div>
+                        <span class="applicant-count"><strong>24</strong> applicants</span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon design">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <span class="job-status active">Active</span>
+                </div>
+                <h3>UI/UX Designer</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Creative Department
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Makati City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Figma</span>
+                    <span class="job-tag">Adobe XD</span>
+                    <span class="job-tag">Prototyping</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <div class="applicant-avatars">
+                            <div class="applicant-avatar">AS</div>
+                            <div class="applicant-avatar">RL</div>
+                            <div class="applicant-avatar">+5</div>
+                        </div>
+                        <span class="applicant-count"><strong>18</strong> applicants</span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon marketing">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <span class="job-status pending">Pending</span>
+                </div>
+                <h3>Digital Marketing Manager</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Marketing
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Pasig City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">SEO</span>
+                    <span class="job-tag">Google Ads</span>
+                    <span class="job-tag">Analytics</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <div class="applicant-avatars">
+                            <div class="applicant-avatar">PT</div>
+                            <div class="applicant-avatar">+3</div>
+                        </div>
+                        <span class="applicant-count"><strong>12</strong> applicants</span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon finance">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <span class="job-status active">Active</span>
+                </div>
+                <h3>Financial Analyst</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Finance
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Taguig City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Excel</span>
+                    <span class="job-tag">Financial Modeling</span>
+                    <span class="job-tag">SAP</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <div class="applicant-avatars">
+                            <div class="applicant-avatar">LM</div>
+                            <div class="applicant-avatar">CB</div>
+                            <div class="applicant-avatar">+12</div>
+                        </div>
+                        <span class="applicant-count"><strong>32</strong> applicants</span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon hr">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span class="job-status draft">Draft</span>
+                </div>
+                <h3>HR Business Partner</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Human Resources
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Makati City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Recruitment</span>
+                    <span class="job-tag">Employee Relations</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <span class="applicant-count" style="color: var(--text-muted);">No applicants yet</span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit" title="Edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon admin">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <span class="job-status closed">Closed</span>
+                </div>
+                <h3>Project Manager</h3>
+                <div class="job-meta">
+                    <div class="job-meta-item">
+                        <i class="fas fa-building"></i>
+                        Operations
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Quezon City
+                    </div>
+                    <div class="job-meta-item">
+                        <i class="fas fa-clock"></i>
+                        Full-time
+                    </div>
+                </div>
+                <div class="job-tags">
+                    <span class="job-tag">Agile</span>
+                    <span class="job-tag">Scrum</span>
+                    <span class="job-tag">JIRA</span>
+                </div>
+                <div class="job-card-footer">
+                    <div class="applicant-info">
+                        <div class="applicant-avatars">
+                            <div class="applicant-avatar">✓</div>
+                        </div>
+                        <span class="applicant-count"><strong>Position Filled</strong></span>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Duplicate">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Job Modal -->
+    <div class="modal-overlay" id="jobModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Create New Job Posting</h2>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Job Title *</label>
+                        <input type="text" placeholder="e.g., Senior Software Developer" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Department *</label>
+                            <select required>
+                                <option value="">Select department</option>
+                                <option value="it">Information Technology</option>
+                                <option value="design">Design</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="finance">Finance</option>
+                                <option value="hr">Human Resources</option>
+                                <option value="operations">Operations</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Employment Type *</label>
+                            <select required>
+                                <option value="">Select type</option>
+                                <option value="fulltime">Full-time</option>
+                                <option value="parttime">Part-time</option>
+                                <option value="contract">Contract</option>
+                                <option value="internship">Internship</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Location *</label>
+                            <select required>
+                                <option value="">Select location</option>
+                                <option value="qc">Quezon City</option>
+                                <option value="makati">Makati City</option>
+                                <option value="pasig">Pasig City</option>
+                                <option value="taguig">Taguig City</option>
+                                <option value="manila">Manila</option>
+                                <option value="remote">Remote</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Salary Range</label>
+                            <input type="text" placeholder="e.g., ₱50,000 - ₱80,000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Job Description *</label>
+                        <textarea placeholder="Describe the role, responsibilities, and what makes this opportunity exciting..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Required Skills</label>
+                        <div class="skills-input" id="skillsInput">
+                            <span class="skill-tag">JavaScript <button type="button">&times;</button></span>
+                            <span class="skill-tag">React <button type="button">&times;</button></span>
+                            <input type="text" placeholder="Type a skill and press Enter">
+                        </div>
+                        <p class="form-hint">Press Enter to add a skill</p>
+                    </div>
+
+                    <div class="ai-suggestion">
+                        <div class="ai-suggestion-header">
+                            <div class="ai-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h4>AI Skill Suggestions</h4>
+                        </div>
+                        <p>Based on your job title, we recommend adding these skills:</p>
+                        <div class="ai-suggestion-tags">
+                            <span class="ai-tag">TypeScript</span>
+                            <span class="ai-tag">Node.js</span>
+                            <span class="ai-tag">REST APIs</span>
+                            <span class="ai-tag">Git</span>
+                            <span class="ai-tag">Agile</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Experience Level *</label>
+                            <select required>
+                                <option value="">Select level</option>
+                                <option value="entry">Entry Level (0-2 years)</option>
+                                <option value="mid">Mid Level (3-5 years)</option>
+                                <option value="senior">Senior Level (5+ years)</option>
+                                <option value="lead">Lead/Manager</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Application Deadline</label>
+                            <input type="date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Benefits & Perks</label>
+                        <textarea placeholder="List the benefits offered for this position..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-secondary">
+                    <i class="fas fa-save"></i>
+                    Save as Draft
+                </button>
+                <button class="btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                    Post Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Controls
+        const newJobBtn = document.getElementById('newJobBtn');
+        const jobModal = document.getElementById('jobModal');
+        const modalClose = document.getElementById('modalClose');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        newJobBtn.addEventListener('click', () => {
+            jobModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeModal() {
+            jobModal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        jobModal.addEventListener('click', (e) => {
+            if (e.target === jobModal) {
+                closeModal();
+            }
+        });
+
+        // Skills Input
+        const skillsInput = document.getElementById('skillsInput');
+        const skillInput = skillsInput.querySelector('input');
+
+        skillInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const value = skillInput.value.trim();
+                if (value) {
+                    const tag = document.createElement('span');
+                    tag.className = 'skill-tag';
+                    tag.innerHTML = `${value} <button type="button">&times;</button>`;
+                    skillsInput.insertBefore(tag, skillInput);
+                    skillInput.value = '';
+
+                    tag.querySelector('button').addEventListener('click', () => {
+                        tag.remove();
+                    });
+                }
+            }
+        });
+
+        // Remove existing skill tags
+        document.querySelectorAll('.skill-tag button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.remove();
+            });
+        });
+
+        // AI suggestion tags
+        document.querySelectorAll('.ai-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.innerHTML = `${tag.textContent} <button type="button">&times;</button>`;
+                skillsInput.insertBefore(skillTag, skillInput);
+                tag.remove();
+
+                skillTag.querySelector('button').addEventListener('click', () => {
+                    skillTag.remove();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
