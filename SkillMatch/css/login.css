@@ -32,3 +32,35 @@ input:focus-visible {
     display: block;
 }
 
+/* Ensure buttons are visible */
+button[type="submit"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10;
+    position: relative;
+}
+
+.tab-btn {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:not(.active) {
+    background-color: transparent;
+    color: #6b7280;
+}
+
+/* Ensure form containers are visible when active */
+.form-container.active {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Make sure forms inside are visible */
+.form-container.active form {
+    display: block !important;
+    visibility: visible !important;
+}
+

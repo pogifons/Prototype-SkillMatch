@@ -96,7 +96,7 @@
                 </div>
                 
                 <!-- Login Form -->
-                <div id="loginForm" class="form-container active">
+                <div id="loginForm" class="form-container active" style="display: block;">
                     <form action="employer.html" class="space-y-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
@@ -122,7 +122,7 @@
                             </label>
                             <a href="#" class="text-sm font-medium text-teal-600 hover:text-teal-700">Forgot Password?</a>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center justify-center gap-2" style="display: flex; visibility: visible; opacity: 1;">
                             Sign In
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -205,7 +205,7 @@
                             <input type="checkbox" class="w-4 h-4 border-gray-300 rounded text-teal-600 focus:ring-teal-500" required>
                             <label class="text-sm text-gray-600">I agree to the <a href="#" class="text-teal-600 hover:text-teal-700 font-medium">Terms of Service</a> and <a href="#" class="text-teal-600 hover:text-teal-700 font-medium">Privacy Policy</a></label>
                         </div>
-                        <button type="submit" class="w-full py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center justify-center gap-2">
+                        <button type="submit" class="w-full py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold flex items-center justify-center gap-2" style="display: flex; visibility: visible; opacity: 1;">
                             Create Account
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -215,43 +215,7 @@
         </div>
     </div>
     
-    <script>
-        function switchTab(tab) {
-            const loginTab = document.getElementById('loginTab');
-            const registerTab = document.getElementById('registerTab');
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            
-            if (tab === 'login') {
-                loginTab.classList.add('active');
-                loginTab.classList.remove('text-gray-600');
-                registerTab.classList.remove('active');
-                registerTab.classList.add('text-gray-600');
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-            } else {
-                registerTab.classList.add('active');
-                registerTab.classList.remove('text-gray-600');
-                loginTab.classList.remove('active');
-                loginTab.classList.add('text-gray-600');
-                registerForm.classList.add('active');
-                loginForm.classList.remove('active');
-            }
-        }
-        
-        function togglePassword(id) {
-            const input = document.getElementById(id);
-            const toggle = document.getElementById(id + 'Toggle');
-            if (input.type === 'password') {
-                input.type = 'text';
-                toggle.classList.remove('fa-eye');
-                toggle.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                toggle.classList.remove('fa-eye-slash');
-                toggle.classList.add('fa-eye');
-            }
-        }
-    </script>
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
 </body>
 </html>
