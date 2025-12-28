@@ -25,11 +25,11 @@ input:focus-visible {
 }
 
 .form-container {
-    display: none;
+    display: none !important;
 }
 
 .form-container.active {
-    display: block;
+    display: block !important;
 }
 
 /* Ensure buttons are visible */
@@ -39,6 +39,10 @@ button[type="submit"] {
     opacity: 1 !important;
     z-index: 10;
     position: relative;
+    background-color: #14b8a6 !important;
+    color: white !important;
+    width: 100%;
+    cursor: pointer;
 }
 
 .tab-btn {
@@ -49,13 +53,6 @@ button[type="submit"] {
 .tab-btn:not(.active) {
     background-color: transparent;
     color: #6b7280;
-}
-
-/* Ensure form containers are visible when active */
-.form-container.active {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
 /* Make sure forms inside are visible */

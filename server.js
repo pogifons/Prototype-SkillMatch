@@ -18,18 +18,16 @@ app.use('/css', express.static(path.join(__dirname, 'SkillMatch', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'SkillMatch', 'public', 'js')));
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://skillmatchdb:5killm4tch@skillmatch-cluster.rt9ysnv.mongodb.net/skillmatch?retryWrites=true&w=majority';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://skillmatchdb:5killm4tch@skillmatch-cluster.rt9ysnv.mongodb.net/SkillMatch?retryWrites=true&w=majority';
 
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(MONGODB_URI)
 .then(() => {
     console.log('✅ Connected to MongoDB Atlas');
 })
 .catch((error) => {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.error('❌ MongoDB connection error:', error.message);
+    console.error('Full error:', error);
+    // Don't exit - allow server to start but log the error
 });
 
 // Import routes

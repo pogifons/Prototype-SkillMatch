@@ -36,16 +36,20 @@ async function apiRequest(endpoint, options = {}) {
             headers
         });
 
-        if (response.status === 401) {
-            // Token expired or invalid
-            removeToken();
-            window.location.href = '/login.html';
-            return;
-        }
-
         const data = await response.json();
         
         if (!response.ok) {
+            // For 401 errors on auth endpoints (login/register), don't redirect - show error
+            if (response.status === 401 && (endpoint.includes('/auth/login') || endpoint.includes('/auth/register'))) {
+                throw new Error(data.error || 'Authentication failed');
+            }
+            // For 401 errors on other endpoints, token expired - redirect to login
+            if (response.status === 401) {
+                removeToken();
+                localStorage.removeItem('employer');
+                window.location.href = '/login.html';
+                return;
+            }
             throw new Error(data.error || 'API request failed');
         }
 
@@ -86,6 +90,7 @@ const authAPI = {
 
     logout: () => {
         removeToken();
+        localStorage.removeItem('employer');
         window.location.href = '/login.html';
     }
 };

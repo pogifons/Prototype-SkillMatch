@@ -56,15 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await window.API.auth.login(email, password);
                 
-                if (response.token) {
+                if (response && response.token) {
                     // Store employer info
-                    localStorage.setItem('employer', JSON.stringify(response.employer));
+                    if (response.employer) {
+                        localStorage.setItem('employer', JSON.stringify(response.employer));
+                    }
                     
                     // Redirect to employer dashboard
                     window.location.href = '/employer.html';
+                } else {
+                    throw new Error('Invalid response from server');
                 }
             } catch (error) {
-                alert('Login failed: ' + error.message);
+                const errorMessage = error.message || 'An unexpected error occurred. Please try again.';
+                alert('Login failed: ' + errorMessage);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
@@ -97,16 +102,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     address
                 });
                 
-                if (response.token) {
+                if (response && response.token) {
                     // Store employer info
-                    localStorage.setItem('employer', JSON.stringify(response.employer));
+                    if (response.employer) {
+                        localStorage.setItem('employer', JSON.stringify(response.employer));
+                    }
                     
                     alert('Account created successfully! Your account is pending verification.');
                     // Redirect to employer dashboard
                     window.location.href = '/employer.html';
+                } else {
+                    throw new Error('Invalid response from server');
                 }
             } catch (error) {
-                alert('Registration failed: ' + error.message);
+                const errorMessage = error.message || 'An unexpected error occurred. Please try again.';
+                alert('Registration failed: ' + errorMessage);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }

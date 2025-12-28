@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Employer = require('../models/Employer');
@@ -7,10 +8,39 @@ const Employer = require('../models/Employer');
 // Register new employer
 router.post('/register', async (req, res) => {
     try {
+        console.log('Registration request received:', { 
+            body: req.body,
+            hasCompanyName: !!req.body.companyName,
+            hasEmail: !!req.body.email,
+            hasPassword: !!req.body.password
+        });
+
+        // Check MongoDB connection
+        if (mongoose.connection.readyState !== 1) {
+            console.error('MongoDB not connected. Ready state:', mongoose.connection.readyState);
+            return res.status(503).json({ error: 'Database connection not available. Please try again in a moment.' });
+        }
+
         const { companyName, email, password, industry, address } = req.body;
 
+        // Validate required fields
+        if (!companyName || !email || !password) {
+            return res.status(400).json({ error: 'Company name, email, and password are required' });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Validate password length
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+        }
+
         // Check if employer already exists
-        const existingEmployer = await Employer.findOne({ email });
+        const existingEmployer = await Employer.findOne({ email: email.toLowerCase().trim() });
         if (existingEmployer) {
             return res.status(400).json({ error: 'Email already registered' });
         }
@@ -20,11 +50,11 @@ router.post('/register', async (req, res) => {
 
         // Create new employer
         const employer = new Employer({
-            companyName,
-            email,
+            companyName: companyName.trim(),
+            email: email.toLowerCase().trim(),
             password: hashedPassword,
-            industry,
-            address
+            industry: industry ? industry.trim() : undefined,
+            address: address ? address.trim() : undefined
         });
 
         await employer.save();
@@ -48,7 +78,39 @@ router.post('/register', async (req, res) => {
         });
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json({ error: 'Server error during registration' });
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        
+        // Provide more detailed error messages
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ error: errors.join(', ') });
+        }
+        
+        if (error.code === 11000 || error.codeName === 'DuplicateKey') {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+        
+        // Handle database name case sensitivity error
+        if (error.code === 13297) {
+            console.error('Database name case mismatch. Please check your MongoDB connection string.');
+            return res.status(500).json({ error: 'Database configuration error. Please contact support.' });
+        }
+        
+        if (error.name === 'MongoServerError' || error.name === 'MongoError') {
+            return res.status(500).json({ error: 'Database connection error. Please try again.' });
+        }
+        
+        // In development, show more details
+        const errorMessage = process.env.NODE_ENV === 'development' 
+            ? `Server error: ${error.message}` 
+            : 'Server error during registration';
+        
+        res.status(500).json({ 
+            error: errorMessage,
+            ...(process.env.NODE_ENV === 'development' && { details: error.stack })
+        });
     }
 });
 
