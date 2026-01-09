@@ -74,13 +74,13 @@ async function loadDashboard() {
             
             // Update user card with employer name
             if (employer.companyName) {
-                const userCardName = document.querySelector('.p-4.border-t h4');
+                const userCardName = document.getElementById('employerName');
                 if (userCardName) {
                     userCardName.textContent = employer.companyName;
                 }
                 // Update initials in user card
                 const initials = employer.companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const initialsElement = document.querySelector('.p-4.border-t .bg-navy');
+                const initialsElement = document.getElementById('employerInitials');
                 if (initialsElement) {
                     initialsElement.textContent = initials;
                 }
@@ -210,6 +210,39 @@ function renderRecentJobs(jobs) {
             </tr>
         `;
     }).join('');
+}
+
+// Load employer info immediately from localStorage to prevent flash
+function loadEmployerInfoImmediate() {
+    try {
+        const employerStr = localStorage.getItem('employer');
+        if (employerStr) {
+            const employer = JSON.parse(employerStr);
+            if (employer && employer.companyName) {
+                const companyName = employer.companyName;
+                const initials = companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                
+                const companyNameElement = document.getElementById('employerName');
+                if (companyNameElement) {
+                    companyNameElement.textContent = companyName;
+                }
+                
+                const initialsElement = document.getElementById('employerInitials');
+                if (initialsElement) {
+                    initialsElement.textContent = initials;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error loading employer info immediately:', error);
+    }
+}
+
+// Load employer info immediately if DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadEmployerInfoImmediate);
+} else {
+    loadEmployerInfoImmediate();
 }
 
 // Handle logout button click

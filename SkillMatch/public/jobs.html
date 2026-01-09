@@ -97,9 +97,9 @@
         </nav>
         <div class="p-4 border-t border-gray-200">
             <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center text-white font-semibold text-sm">TC</div>
+                <div class="w-10 h-10 bg-navy rounded-full flex items-center justify-center text-white font-semibold text-sm" id="employerInitials"></div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-semibold text-gray-900 truncate">TechCorp Inc.</h4>
+                    <h4 class="text-sm font-semibold text-gray-900 truncate" id="employerName"></h4>
                     <p class="text-xs text-gray-500 truncate">Verified Employer</p>
                 </div>
             </div>
@@ -115,13 +115,9 @@
                     <p class="text-gray-600">Manage your job vacancies and track applicant progress</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
-                        <i class="fas fa-download"></i>
-                        <span>Export</span>
-                    </button>
-                    <button id="newJobBtn" class="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium">
+                    <button id="postJobBtn" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 hover:bg-gray-50 font-medium">
                         <i class="fas fa-plus"></i>
-                        <span>Post New Job</span>
+                        <span>Post a Job</span>
                     </button>
                 </div>
             </div>
@@ -275,7 +271,7 @@
                     <i class="fas fa-save"></i>
                     <span>Save as Draft</span>
                 </button>
-                <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium flex items-center gap-2">
+                <button class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium flex items-center gap-2">
                     <i class="fas fa-paper-plane"></i>
                     <span>Post Job</span>
                 </button>
@@ -283,6 +279,26 @@
         </div>
     </div>
     
+    <script>
+        // Immediately load employer info from localStorage to prevent flash
+        (function() {
+            try {
+                const employerStr = localStorage.getItem('employer');
+                if (employerStr) {
+                    const employer = JSON.parse(employerStr);
+                    if (employer && employer.companyName) {
+                        const companyName = employer.companyName;
+                        const initials = companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        
+                        const nameEl = document.getElementById('employerName');
+                        const initialsEl = document.getElementById('employerInitials');
+                        if (nameEl) nameEl.textContent = companyName;
+                        if (initialsEl) initialsEl.textContent = initials;
+                    }
+                }
+            } catch(e) {}
+        })();
+    </script>
     <script src="js/api.js"></script>
     <script src="js/jobs.js"></script>
 </body>
