@@ -147,7 +147,7 @@ function renderJobs(jobs) {
         }).join('');
     } else if (gridContainer) {
         // Card format
-        gridContainer.innerHTML = jobs.map(job => {
+        const jobsHTML = jobs.map(job => {
             const applicantCount = job.applications?.length || 0;
             const statusBadge = job.status === 'active' ? 'badge-green' : 
                                job.status === 'pending' ? 'badge-orange' : 
@@ -157,7 +157,7 @@ function renderJobs(jobs) {
             const skills = job.requiredSkills?.slice(0, 3) || [];
             
             return `
-                <div class="bg-white border border-gray-200 rounded-card p-6 hover:shadow-lg transition-shadow">
+                <div class="bg-white border border-gray-200 rounded-card p-6 hover:shadow-lg transition-shadow cursor-pointer job-card" data-job-id="${job._id}">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-briefcase text-blue-600 text-xl"></i>
@@ -188,18 +188,14 @@ function renderJobs(jobs) {
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-gray-600"><strong>${applicantCount}</strong> applicant${applicantCount !== 1 ? 's' : ''}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="editJob('${job._id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded" title="Edit">
-                                <i class="fas fa-pen text-sm"></i>
-                            </button>
-                            <button onclick="deleteJob('${job._id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-600 rounded" title="Delete">
-                                <i class="fas fa-trash text-sm"></i>
-                            </button>
-                        </div>
                     </div>
                 </div>
             `;
         }).join('');
+        gridContainer.innerHTML = jobsHTML;
+        
+        // Attach click handlers after rendering
+        attachJobCardClickHandlers();
     }
 }
 
@@ -309,6 +305,232 @@ async function handleJobSubmit(e) {
             submitBtn.disabled = false;
         }
     }
+}
+
+// Job Details Modal Functions
+const jobDetailsModal = document.getElementById('jobDetailsModal');
+const jobDetailsClose = document.getElementById('jobDetailsClose');
+const jobDetailsCloseBtn = document.getElementById('jobDetailsCloseBtn');
+const jobDetailsEditBtn = document.getElementById('jobDetailsEditBtn');
+
+function openJobDetailsModal(jobId) {
+    // Fetch full job details
+    window.API.jobs.getById(jobId)
+        .then(job => {
+            displayJobDetails(job);
+            jobDetailsModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        })
+        .catch(error => {
+            console.error('Error fetching job details:', error);
+            alert('Error loading job details: ' + error.message);
+        });
+}
+
+function closeJobDetailsModal() {
+    jobDetailsModal.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function displayJobDetails(job) {
+    const content = document.getElementById('jobDetailsContent');
+    const title = document.getElementById('jobDetailsTitle');
+    
+    if (!content || !title) return;
+    
+    title.textContent = job.title || 'Job Details';
+    
+    const statusBadge = job.status === 'active' ? 'badge-green' : 
+                       job.status === 'pending' ? 'badge-orange' : 
+                       job.status === 'closed' ? 'badge-gray' : 'badge-yellow';
+    const statusText = job.status?.charAt(0).toUpperCase() + job.status?.slice(1) || 'Draft';
+    const employmentType = job.employmentType?.charAt(0).toUpperCase() + job.employmentType?.slice(1) || 'Full-time';
+    const experienceLevel = job.experienceLevel?.charAt(0).toUpperCase() + job.experienceLevel?.slice(1) || 'Not specified';
+    const applicantCount = job.applications?.length || 0;
+    const createdDate = new Date(job.createdAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const updatedDate = new Date(job.updatedAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const deadlineDate = job.applicationDeadline ? 
+        new Date(job.applicationDeadline).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        }) : 'Not specified';
+    
+    content.innerHTML = `
+        <div class="space-y-6">
+            <!-- Header Section -->
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <h3 class="font-serif text-2xl font-bold text-navy">${job.title || 'Untitled Job'}</h3>
+                        <span class="badge ${statusBadge}">${statusText}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-building text-teal-600"></i>
+                            <span>${job.department || 'N/A'}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-teal-600"></i>
+                            <span>${job.location || 'N/A'}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-clock text-teal-600"></i>
+                            <span>${employmentType}</span>
+                        </div>
+                        ${job.salaryRange ? `
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-money-bill-wave text-teal-600"></i>
+                                <span>${job.salaryRange}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Section -->
+            <div class="grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-navy">${applicantCount}</div>
+                    <div class="text-sm text-gray-600">Applicant${applicantCount !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-navy">${job.views || 0}</div>
+                    <div class="text-sm text-gray-600">View${(job.views || 0) !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-navy">${experienceLevel}</div>
+                    <div class="text-sm text-gray-600">Experience Level</div>
+                </div>
+            </div>
+            
+            <!-- Description Section -->
+            <div>
+                <h4 class="font-semibold text-lg text-gray-900 mb-3 flex items-center gap-2">
+                    <i class="fas fa-file-alt text-teal-600"></i>
+                    Job Description
+                </h4>
+                <div class="prose max-w-none">
+                    <p class="text-gray-700 whitespace-pre-wrap">${job.description || 'No description provided.'}</p>
+                </div>
+            </div>
+            
+            <!-- Required Skills Section -->
+            ${job.requiredSkills && job.requiredSkills.length > 0 ? `
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-tools text-teal-600"></i>
+                        Required Skills
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        ${job.requiredSkills.map(skill => `
+                            <span class="px-3 py-1.5 bg-teal-50 border border-teal-200 text-teal-700 rounded-lg text-sm font-medium">
+                                ${skill}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- Benefits Section -->
+            ${job.benefits ? `
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-gift text-teal-600"></i>
+                        Benefits & Perks
+                    </h4>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-700 whitespace-pre-wrap">${job.benefits}</p>
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- Additional Information -->
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                <div>
+                    <h5 class="text-sm font-semibold text-gray-700 mb-1">Application Deadline</h5>
+                    <p class="text-sm text-gray-600">${deadlineDate}</p>
+                </div>
+                <div>
+                    <h5 class="text-sm font-semibold text-gray-700 mb-1">Experience Level</h5>
+                    <p class="text-sm text-gray-600">${experienceLevel}</p>
+                </div>
+                <div>
+                    <h5 class="text-sm font-semibold text-gray-700 mb-1">Posted On</h5>
+                    <p class="text-sm text-gray-600">${createdDate}</p>
+                </div>
+                <div>
+                    <h5 class="text-sm font-semibold text-gray-700 mb-1">Last Updated</h5>
+                    <p class="text-sm text-gray-600">${updatedDate}</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Set edit button handler
+    jobDetailsEditBtn.onclick = () => {
+        closeJobDetailsModal();
+        editJob(job._id);
+    };
+    
+    // Set delete button handler
+    const jobDetailsDeleteBtn = document.getElementById('jobDetailsDeleteBtn');
+    if (jobDetailsDeleteBtn) {
+        jobDetailsDeleteBtn.onclick = async () => {
+            if (confirm(`Are you sure you want to delete "${job.title}"? This action cannot be undone.`)) {
+                try {
+                    await deleteJob(job._id);
+                    closeJobDetailsModal();
+                } catch (error) {
+                    alert('Error deleting job: ' + error.message);
+                }
+            }
+        };
+    }
+}
+
+// Event listeners for job details modal
+if (jobDetailsClose) {
+    jobDetailsClose.addEventListener('click', closeJobDetailsModal);
+}
+if (jobDetailsCloseBtn) {
+    jobDetailsCloseBtn.addEventListener('click', closeJobDetailsModal);
+}
+if (jobDetailsModal) {
+    jobDetailsModal.addEventListener('click', (e) => {
+        if (e.target === jobDetailsModal) closeJobDetailsModal();
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && jobDetailsModal.classList.contains('open')) {
+            closeJobDetailsModal();
+        }
+    });
+}
+
+// Add click handlers to job cards after rendering
+function attachJobCardClickHandlers() {
+    document.querySelectorAll('.job-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't open modal if clicking on edit/delete buttons
+            if (e.target.closest('button') || e.target.closest('.fa-pen') || e.target.closest('.fa-trash')) {
+                return;
+            }
+            const jobId = card.getAttribute('data-job-id');
+            if (jobId) {
+                openJobDetailsModal(jobId);
+            }
+        });
+    });
 }
 
 // Load and update employer info in sidebar

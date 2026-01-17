@@ -78,10 +78,6 @@
                     <i class="fas fa-chart-line w-5"></i>
                     <span>Reports & Insights</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1">
-                    <i class="fas fa-chart-pie w-5"></i>
-                    <span>Demographics</span>
-                </a>
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">Account</p>
@@ -160,6 +156,36 @@
             <!-- Jobs will be loaded dynamically here via JavaScript -->
         </div>
     </main>
+    
+    <!-- Job Details Modal -->
+    <div class="modal-overlay" id="jobDetailsModal">
+        <div class="modal" style="max-width: 900px;">
+            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                <h2 class="font-serif text-xl font-bold text-navy" id="jobDetailsTitle">Job Details</h2>
+                <button id="jobDetailsClose" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 rounded"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6">
+                <div id="jobDetailsContent">
+                    <!-- Job details will be populated here -->
+                </div>
+            </div>
+            <div class="flex items-center justify-between gap-3 p-6 border-t border-gray-200">
+                <button id="jobDetailsDeleteBtn" class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium flex items-center gap-2">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete Job</span>
+                </button>
+                <div class="flex items-center gap-3">
+                    <button id="jobDetailsEditBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2">
+                        <i class="fas fa-pen"></i>
+                        <span>Edit Job</span>
+                    </button>
+                    <button id="jobDetailsCloseBtn" class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- New Job Modal -->
     <div class="modal-overlay" id="jobModal">

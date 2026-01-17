@@ -67,6 +67,11 @@ select:focus-visible {
     color: #374151;
 }
 
+.badge-red {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
 .skill-match-bar {
     height: 8px;
     background-color: #e5e7eb;
@@ -105,6 +110,40 @@ select:focus-visible {
 
 .match-breakdown {
     animation: slideIn 0.3s ease;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.applicant-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.applicant-row:hover {
+    background-color: #f9fafb;
 }
 
 @media (max-width: 768px) {
