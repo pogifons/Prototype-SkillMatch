@@ -4,12 +4,43 @@ const mongoose = require('mongoose');
 const Job = require('../models/Job');
 const { verifyToken } = require('./auth');
 
-// Get all jobs for an employer
+// Get all jobs for an employer with filtering and search
 router.get('/', verifyToken, async (req, res) => {
     try {
-        const jobs = await Job.find({ employerId: req.employerId })
+        const { status, department, location, search, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+        
+        let query = { employerId: req.employerId };
+        
+        // Filter by status
+        if (status && status !== 'all') {
+            query.status = status;
+        }
+        
+        // Filter by department
+        if (department) {
+            query.department = department;
+        }
+        
+        // Filter by location
+        if (location) {
+            query.location = { $regex: location, $options: 'i' };
+        }
+        
+        // Search in title, description, or required skills
+        if (search) {
+            query.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { requiredSkills: { $in: [new RegExp(search, 'i')] } }
+            ];
+        }
+        
+        const sortOptions = {};
+        sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+        
+        const jobs = await Job.find(query)
             .populate('applications', 'firstName lastName email')
-            .sort({ createdAt: -1 });
+            .sort(sortOptions);
         res.json(jobs);
     } catch (error) {
         console.error('Get jobs error:', error);
@@ -68,6 +99,25 @@ router.put('/:id', verifyToken, async (req, res) => {
     } catch (error) {
         console.error('Update job error:', error);
         res.status(500).json({ error: 'Server error updating job' });
+    }
+});
+
+// Close/Archive job
+router.put('/:id/close', verifyToken, async (req, res) => {
+    try {
+        const job = await Job.findOneAndUpdate(
+            { _id: req.params.id, employerId: req.employerId },
+            { status: 'closed', updatedAt: Date.now() },
+            { new: true }
+        );
+
+        if (!job) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+        res.json({ message: 'Job closed successfully', job });
+    } catch (error) {
+        console.error('Close job error:', error);
+        res.status(500).json({ error: 'Server error closing job' });
     }
 });
 

@@ -66,7 +66,42 @@ const applicantSchema = new mongoose.Schema({
         appliedAt: {
             type: Date,
             default: Date.now
-        }
+        },
+        notes: [{
+            note: String,
+            addedBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Employer'
+            },
+            addedAt: {
+                type: Date,
+                default: Date.now
+            }
+        }],
+        interviewDate: Date,
+        hiredAt: Date
+    }],
+    assignedTrainings: [{
+        trainingId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Training'
+        },
+        assignedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Employer'
+        },
+        assignedAt: {
+            type: Date,
+            default: Date.now
+        },
+        targetCompletionDate: Date,
+        status: {
+            type: String,
+            enum: ['assigned', 'in-progress', 'completed', 'failed'],
+            default: 'assigned'
+        },
+        completionDate: Date,
+        assessmentScore: Number
     }],
     createdAt: {
         type: Date,

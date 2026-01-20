@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const Employer = require('../models/Employer');
 
 // Register new employer
@@ -151,6 +152,80 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Server error during login' });
+    }
+});
+
+// Forgot Password - request reset code
+router.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const employer = await Employer.findOne({ email: email.toLowerCase().trim() });
+        if (!employer) {
+            // Do not reveal that the email does not exist
+            return res.status(200).json({
+                message: 'If this email is registered, a reset code has been generated.'
+            });
+        }
+
+        // Generate a 6-digit numeric reset code
+        const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        employer.resetPasswordToken = resetCode;
+        // Code valid for 15 minutes
+        employer.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
+        await employer.save();
+
+        // NOTE: In a production system, you would send this code via email/SMS.
+        // For the capstone prototype, we return the code in the response so it can be tested easily.
+        res.json({
+            message: 'Password reset code generated successfully.',
+            resetCode
+        });
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        res.status(500).json({ error: 'Server error during password reset request' });
+    }
+});
+
+// Reset Password - verify code and set new password
+router.post('/reset-password', async (req, res) => {
+    try {
+        const { email, code, newPassword } = req.body;
+
+        if (!email || !code || !newPassword) {
+            return res.status(400).json({ error: 'Email, code, and new password are required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+        }
+
+        const employer = await Employer.findOne({
+            email: email.toLowerCase().trim(),
+            resetPasswordToken: code,
+            resetPasswordExpires: { $gt: new Date() } // not expired
+        });
+
+        if (!employer) {
+            return res.status(400).json({ error: 'Invalid or expired reset code' });
+        }
+
+        // Hash new password and clear reset fields
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        employer.password = hashedPassword;
+        employer.resetPasswordToken = null;
+        employer.resetPasswordExpires = null;
+        await employer.save();
+
+        res.json({ message: 'Password has been reset successfully. You can now log in with your new password.' });
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: 'Server error during password reset' });
     }
 });
 

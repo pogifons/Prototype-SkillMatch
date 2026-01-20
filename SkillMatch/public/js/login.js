@@ -39,6 +39,12 @@ function togglePassword(id) {
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.querySelector('#loginForm form');
     const registerForm = document.querySelector('#registerForm form');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const resetPasswordModal = document.getElementById('resetPasswordModal');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    const forgotPasswordInfo = document.getElementById('forgotPasswordInfo');
 
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -121,6 +127,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.innerHTML = originalText;
             }
         });
+    }
+
+    // Forgot Password flow
+    if (forgotPasswordLink && forgotPasswordModal && resetPasswordModal) {
+        const cancelForgotPassword = document.getElementById('cancelForgotPassword');
+        const cancelResetPassword = document.getElementById('cancelResetPassword');
+
+        const openModal = (modal) => {
+            modal.classList.remove('hidden');
+        };
+
+        const closeModal = (modal) => {
+            modal.classList.add('hidden');
+        };
+
+        forgotPasswordLink.addEventListener('click', () => {
+            openModal(forgotPasswordModal);
+        });
+
+        cancelForgotPassword.addEventListener('click', () => {
+            closeModal(forgotPasswordModal);
+        });
+
+        cancelResetPassword.addEventListener('click', () => {
+            closeModal(resetPasswordModal);
+        });
+
+        if (forgotPasswordForm) {
+            forgotPasswordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const emailInput = document.getElementById('forgotEmail');
+                const email = emailInput.value;
+
+                try {
+                    const response = await window.API.auth.requestPasswordReset(email);
+                    // Show info and also surface the code for testing
+                    if (response.resetCode) {
+                        forgotPasswordInfo.classList.remove('hidden');
+                        forgotPasswordInfo.textContent = `Reset code (for testing): ${response.resetCode}. It will expire in 15 minutes.`;
+                    } else {
+                        forgotPasswordInfo.classList.remove('hidden');
+                        forgotPasswordInfo.textContent = response.message || 'If this email is registered, a reset code has been generated.';
+                    }
+
+                    alert('If this email is registered, a reset code has been generated.');
+                    // Open reset modal so user can enter code
+                    closeModal(forgotPasswordModal);
+                    openModal(resetPasswordModal);
+                    // Prefill email in reset form
+                    const resetEmail = document.getElementById('resetEmail');
+                    if (resetEmail) {
+                        resetEmail.value = email;
+                    }
+                } catch (error) {
+                    alert(error.message || 'Failed to generate reset code. Please try again.');
+                }
+            });
+        }
+
+        if (resetPasswordForm) {
+            resetPasswordForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('resetEmail').value;
+                const code = document.getElementById('resetCode').value;
+                const newPassword = document.getElementById('resetNewPassword').value;
+
+                try {
+                    const response = await window.API.auth.resetPassword(email, code, newPassword);
+                    alert(response.message || 'Password reset successful. You can now log in with your new password.');
+                    closeModal(resetPasswordModal);
+                } catch (error) {
+                    alert(error.message || 'Failed to reset password. Please check the code and try again.');
+                }
+            });
+        }
     }
 
     // Check if user is already logged in

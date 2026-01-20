@@ -65,7 +65,7 @@
             </div>
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">Account</p>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1">
+                <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1">
                     <i class="fas fa-cog w-5"></i>
                     <span>Settings</span>
                 </a>
@@ -95,11 +95,7 @@
                     <p class="text-gray-600">Review, shortlist, and manage job applications with AI insights</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
-                        <i class="fas fa-download"></i>
-                        <span>Export</span>
-                    </button>
-                    <button class="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium">
+                    <button id="aiMatchAllBtn" class="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium">
                         <i class="fas fa-robot"></i>
                         <span>AI Match All</span>
                     </button>
@@ -110,23 +106,23 @@
         <!-- Stats -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
             <div class="bg-white border border-gray-200 rounded-card p-4">
-                <div class="text-2xl font-bold text-gray-900 mb-1">156</div>
+                <div id="statTotalApplicants" class="text-2xl font-bold text-gray-900 mb-1">0</div>
                 <div class="text-sm text-gray-600">Total Applicants</div>
             </div>
             <div class="bg-white border border-gray-200 rounded-card p-4">
-                <div class="text-2xl font-bold text-gray-900 mb-1">48</div>
+                <div id="statNewApplicants" class="text-2xl font-bold text-gray-900 mb-1">0</div>
                 <div class="text-sm text-gray-600">New Applications</div>
             </div>
             <div class="bg-white border border-gray-200 rounded-card p-4">
-                <div class="text-2xl font-bold text-gray-900 mb-1">32</div>
+                <div id="statShortlisted" class="text-2xl font-bold text-gray-900 mb-1">0</div>
                 <div class="text-sm text-gray-600">Shortlisted</div>
             </div>
             <div class="bg-white border border-gray-200 rounded-card p-4">
-                <div class="text-2xl font-bold text-gray-900 mb-1">18</div>
+                <div id="statInterviews" class="text-2xl font-bold text-gray-900 mb-1">0</div>
                 <div class="text-sm text-gray-600">Interviews</div>
             </div>
             <div class="bg-white border border-gray-200 rounded-card p-4">
-                <div class="text-2xl font-bold text-gray-900 mb-1">8</div>
+                <div id="statHired" class="text-2xl font-bold text-gray-900 mb-1">0</div>
                 <div class="text-sm text-gray-600">Hired</div>
             </div>
         </div>
@@ -136,28 +132,34 @@
             <div class="flex flex-wrap items-center gap-4">
                 <div class="flex-1 min-w-[200px] relative">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" placeholder="Search applicants..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+                    <input id="applicantSearch" type="text" placeholder="Search applicants..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
                 </div>
-                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                    <option value="">All Positions</option>
-                    <option>Senior Software Developer</option>
-                    <option>UI/UX Designer</option>
-                    <option>BPO Team Leader</option>
-                    <option>Financial Analyst</option>
+                <select id="jobFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <option value="all">All Positions</option>
                 </select>
-                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
-                    <option value="">All Status</option>
-                    <option>New</option>
-                    <option>Shortlisted</option>
-                    <option>Interview</option>
-                    <option>Hired</option>
-                    <option>Rejected</option>
+                <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <option value="all">All Status</option>
+                    <option value="new">New</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="interview">Interview</option>
+                    <option value="hired">Hired</option>
+                    <option value="rejected">Rejected</option>
                 </select>
-                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <select id="scoreFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
                     <option value="">Match Score</option>
-                    <option>90% and above</option>
-                    <option>70% - 89%</option>
-                    <option>Below 70%</option>
+                    <option value="90">90% and above</option>
+                    <option value="70">70% and above</option>
+                    <option value="50">50% and above</option>
+                </select>
+                <select id="sortByFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <option value="appliedAt">Sort: Applied Date</option>
+                    <option value="matchScore">Sort: Match Score</option>
+                    <option value="name">Sort: Name</option>
+                    <option value="status">Sort: Status</option>
+                </select>
+                <select id="sortOrderFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <option value="desc">Desc</option>
+                    <option value="asc">Asc</option>
                 </select>
             </div>
         </div>
@@ -167,7 +169,8 @@
             <div class="p-6 border-b border-gray-200">
                 <h2 class="font-serif text-xl font-bold text-navy flex items-center gap-2">
                     <i class="fas fa-users text-teal-600"></i>
-                    All Applicants
+                    <span>Applicants</span>
+                    <span class="text-gray-500 font-sans font-medium text-base" id="selectedJobLabel"></span>
                 </h2>
             </div>
             <div class="overflow-x-auto">

@@ -49,6 +49,23 @@ const trainingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Applicant'
     }],
+    requiredSkills: [{
+        type: String,
+        trim: true
+    }],
+    assessments: [{
+        applicantId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Applicant'
+        },
+        score: Number,
+        completedAt: Date,
+        answers: [{
+            question: String,
+            answer: String,
+            isCorrect: Boolean
+        }]
+    }],
     certificationsIssued: {
         type: Number,
         default: 0

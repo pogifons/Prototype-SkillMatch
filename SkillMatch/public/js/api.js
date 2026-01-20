@@ -84,6 +84,22 @@ const authAPI = {
         return response;
     },
 
+    // Forgot Password - request reset code
+    requestPasswordReset: async (email) => {
+        return await apiRequest('/auth/forgot-password', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+    },
+
+    // Reset Password - submit code and new password
+    resetPassword: async (email, code, newPassword) => {
+        return await apiRequest('/auth/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ email, code, newPassword })
+        });
+    },
+
     getCurrentUser: async () => {
         return await apiRequest('/auth/me');
     },
@@ -97,8 +113,9 @@ const authAPI = {
 
 // Jobs API
 const jobsAPI = {
-    getAll: async () => {
-        return await apiRequest('/jobs');
+    getAll: async (filters = {}) => {
+        const queryParams = new URLSearchParams(filters).toString();
+        return await apiRequest(`/jobs${queryParams ? '?' + queryParams : ''}`);
     },
 
     getById: async (id) => {
@@ -119,6 +136,12 @@ const jobsAPI = {
         });
     },
 
+    close: async (id) => {
+        return await apiRequest(`/jobs/${id}/close`, {
+            method: 'PUT'
+        });
+    },
+
     delete: async (id) => {
         return await apiRequest(`/jobs/${id}`, {
             method: 'DELETE'
@@ -136,19 +159,48 @@ const applicantsAPI = {
         return await apiRequest('/applicants');
     },
 
-    getByJob: async (jobId) => {
-        return await apiRequest(`/applicants/job/${jobId}`);
+    getByJob: async (jobId, filters = {}) => {
+        const queryParams = new URLSearchParams(filters).toString();
+        return await apiRequest(`/applicants/job/${jobId}${queryParams ? '?' + queryParams : ''}`);
     },
 
     getById: async (id) => {
         return await apiRequest(`/applicants/${id}`);
     },
 
-    updateStatus: async (id, jobId, status) => {
+    updateStatus: async (id, jobId, status, interviewDate) => {
         return await apiRequest(`/applicants/${id}/status`, {
             method: 'PUT',
-            body: JSON.stringify({ jobId, status })
+            body: JSON.stringify({ jobId, status, interviewDate })
         });
+    },
+
+    addNote: async (id, jobId, note) => {
+        return await apiRequest(`/applicants/${id}/notes`, {
+            method: 'POST',
+            body: JSON.stringify({ jobId, note })
+        });
+    },
+
+    sendMessage: async (id, jobId, subject, message) => {
+        return await apiRequest(`/applicants/${id}/message`, {
+            method: 'POST',
+            body: JSON.stringify({ jobId, subject, message })
+        });
+    },
+
+    computeMatchScore: async (id, jobId) => {
+        return await apiRequest(`/applicants/${id}/compute-match/${jobId}`, {
+            method: 'POST'
+        });
+    },
+
+    getRecommendedTrainings: async (id) => {
+        return await apiRequest(`/applicants/${id}/recommended-trainings`);
+    },
+
+    getAssessmentHistory: async (id) => {
+        return await apiRequest(`/applicants/${id}/assessment-history`);
     },
 
     getStats: async () => {
@@ -186,6 +238,24 @@ const trainingAPI = {
         });
     },
 
+    assign: async (trainingId, applicantId, targetCompletionDate) => {
+        return await apiRequest('/training/assign', {
+            method: 'POST',
+            body: JSON.stringify({ trainingId, applicantId, targetCompletionDate })
+        });
+    },
+
+    updateProgress: async (applicantId, trainingId, status, completionDate, assessmentScore) => {
+        return await apiRequest(`/training/progress/${applicantId}/${trainingId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ status, completionDate, assessmentScore })
+        });
+    },
+
+    getApplicantProgress: async (applicantId) => {
+        return await apiRequest(`/training/applicant/${applicantId}`);
+    },
+
     getStats: async () => {
         return await apiRequest('/training/stats/summary');
     }
@@ -197,8 +267,27 @@ const analyticsAPI = {
         return await apiRequest('/analytics/dashboard');
     },
 
-    getInsights: async () => {
-        return await apiRequest('/analytics/insights');
+    getInsights: async (filters = {}) => {
+        const queryParams = new URLSearchParams(filters).toString();
+        return await apiRequest(`/analytics/insights${queryParams ? '?' + queryParams : ''}`);
+    },
+
+    getTimeToHire: async (filters = {}) => {
+        const queryParams = new URLSearchParams(filters).toString();
+        return await apiRequest(`/analytics/time-to-hire${queryParams ? '?' + queryParams : ''}`);
+    },
+
+    exportReport: async (type, format, filters = {}) => {
+        const params = { type, format, ...filters };
+        const queryParams = new URLSearchParams(params).toString();
+        return await fetch(`${API_BASE_URL}/analytics/export?${queryParams}`, {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        }).then(response => {
+            if (!response.ok) throw new Error('Export failed');
+            return response.blob();
+        });
     }
 };
 
@@ -206,6 +295,55 @@ const analyticsAPI = {
 const employerAPI = {
     getDashboard: async () => {
         return await apiRequest('/employer/dashboard');
+    },
+
+    updateProfile: async (profileData) => {
+        return await apiRequest('/employer/profile', {
+            method: 'PUT',
+            body: JSON.stringify(profileData)
+        });
+    },
+
+    changePassword: async (currentPassword, newPassword) => {
+        return await apiRequest('/employer/change-password', {
+            method: 'PUT',
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+    },
+
+    getTeam: async () => {
+        return await apiRequest('/employer/team');
+    },
+
+    addTeamMember: async (email, role) => {
+        return await apiRequest('/employer/team', {
+            method: 'POST',
+            body: JSON.stringify({ email, role })
+        });
+    },
+
+    removeTeamMember: async (email) => {
+        return await apiRequest(`/employer/team/${email}`, {
+            method: 'DELETE'
+        });
+    },
+
+    updateTeamMemberRole: async (email, role) => {
+        return await apiRequest(`/employer/team/${email}`, {
+            method: 'PUT',
+            body: JSON.stringify({ role })
+        });
+    },
+
+    getNotifications: async () => {
+        return await apiRequest('/employer/notifications');
+    },
+
+    updateNotifications: async (preferences) => {
+        return await apiRequest('/employer/notifications', {
+            method: 'PUT',
+            body: JSON.stringify(preferences)
+        });
     }
 };
 

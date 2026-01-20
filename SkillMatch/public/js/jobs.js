@@ -5,11 +5,29 @@ const cancelBtn = document.getElementById('cancelBtn');
 const skillsInput = document.getElementById('skillsInput');
 const skillInput = skillsInput.querySelector('input');
 const aiSuggestions = document.getElementById('aiSuggestions');
+const jobForm = document.querySelector('#jobModal form');
+const jobModalTitle = document.querySelector('#jobModal h2');
 
-postJobBtn.addEventListener('click', () => {
+// Track whether we're creating a new job or editing an existing one
+let currentJobId = null;
+
+function openJobModalForCreate() {
+    currentJobId = null;
+    if (jobForm) {
+        jobForm.reset();
+    }
+    // Clear existing skill tags (except the input)
+    document.querySelectorAll('#skillsInput .skill-tag').forEach(tag => {
+        if (!tag.querySelector('input')) tag.remove();
+    });
+    if (jobModalTitle) {
+        jobModalTitle.textContent = 'Create New Job Posting';
+    }
     jobModal.classList.add('open');
     document.body.style.overflow = 'hidden';
-});
+}
+
+postJobBtn.addEventListener('click', openJobModalForCreate);
 
 function closeModal() {
     jobModal.classList.remove('open');
@@ -213,9 +231,67 @@ function updateJobStats(jobs) {
     }
 }
 
-function editJob(jobId) {
-    // TODO: Implement edit functionality
-    console.log('Edit job:', jobId);
+async function editJob(jobId) {
+    try {
+        if (!window.API || !window.API.jobs) {
+            console.error('API not available');
+            return;
+        }
+
+        const job = await window.API.jobs.getById(jobId);
+        currentJobId = jobId;
+
+        if (jobModalTitle) {
+            jobModalTitle.textContent = 'Edit Job Posting';
+        }
+
+        if (jobForm) {
+            // Map existing fields
+            const titleInput = jobForm.querySelector('input[placeholder*="Job Title"], input[placeholder*="e.g., Senior"]');
+            const selects = Array.from(jobForm.querySelectorAll('select'));
+            const departmentSelect = selects[0];
+            const employmentSelect = selects[1];
+            const locationSelect = selects[2];
+            const experienceSelect = selects[4] || selects[3];
+            const salaryInput = jobForm.querySelector('input[placeholder*="Salary"], input[placeholder*="₱"]');
+            const descriptionTextarea = jobForm.querySelector('textarea[placeholder*="Describe"], textarea[placeholder*="Job Description"]');
+            const deadlineInput = jobForm.querySelector('input[type="date"]');
+            const benefitsTextarea = jobForm.querySelector('textarea[placeholder*="Benefits"], textarea[placeholder*="List the benefits"]');
+
+            if (titleInput) titleInput.value = job.title || '';
+            if (departmentSelect) departmentSelect.value = job.department || '';
+            if (employmentSelect) employmentSelect.value = job.employmentType || 'fulltime';
+            if (locationSelect) locationSelect.value = job.location || '';
+            if (salaryInput) salaryInput.value = job.salaryRange || '';
+            if (descriptionTextarea) descriptionTextarea.value = job.description || '';
+            if (experienceSelect) experienceSelect.value = job.experienceLevel || '';
+            if (deadlineInput && job.applicationDeadline) {
+                const d = new Date(job.applicationDeadline);
+                // format as yyyy-mm-dd
+                const iso = d.toISOString().split('T')[0];
+                deadlineInput.value = iso;
+            }
+            if (benefitsTextarea) benefitsTextarea.value = job.benefits || '';
+
+            // Clear and repopulate skills
+            document.querySelectorAll('#skillsInput .skill-tag').forEach(tag => {
+                if (!tag.querySelector('input')) tag.remove();
+            });
+            (job.requiredSkills || []).forEach(skill => {
+                const tag = document.createElement('span');
+                tag.className = 'skill-tag';
+                tag.innerHTML = `${skill} <button type="button">&times;</button>`;
+                skillsInput.insertBefore(tag, skillInput);
+                tag.querySelector('button').addEventListener('click', () => tag.remove());
+            });
+        }
+
+        jobModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    } catch (error) {
+        console.error('Error loading job for edit:', error);
+        alert('Error loading job for edit: ' + (error.message || 'Unknown error'));
+    }
 }
 
 async function deleteJob(jobId) {
@@ -266,7 +342,7 @@ async function handleJobSubmit(e) {
         experienceLevel: experienceSelect?.value || 'mid',
         applicationDeadline: deadlineInput?.value || '',
         benefits: benefitsTextarea?.value || '',
-        status: 'draft'
+        status: currentJobId ? (jobData.status || 'active') : 'draft'
     };
     
     // Validate required fields
@@ -283,7 +359,11 @@ async function handleJobSubmit(e) {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
         }
         
-        await window.API.jobs.create(jobData);
+        if (currentJobId) {
+            await window.API.jobs.update(currentJobId, jobData);
+        } else {
+            await window.API.jobs.create(jobData);
+        }
         
         // Close modal and reload jobs
         closeModal();
@@ -312,6 +392,7 @@ const jobDetailsModal = document.getElementById('jobDetailsModal');
 const jobDetailsClose = document.getElementById('jobDetailsClose');
 const jobDetailsCloseBtn = document.getElementById('jobDetailsCloseBtn');
 const jobDetailsEditBtn = document.getElementById('jobDetailsEditBtn');
+const jobDetailsPostBtn = document.getElementById('jobDetailsPostBtn');
 
 function openJobDetailsModal(jobId) {
     // Fetch full job details
@@ -480,6 +561,27 @@ function displayJobDetails(job) {
         closeJobDetailsModal();
         editJob(job._id);
     };
+
+    // Configure Post Draft button (only for draft jobs)
+    if (jobDetailsPostBtn) {
+        if (job.status === 'draft') {
+            jobDetailsPostBtn.classList.remove('hidden');
+            jobDetailsPostBtn.onclick = async () => {
+                if (!window.API || !window.API.jobs) return;
+                try {
+                    await window.API.jobs.update(job._id, { status: 'active' });
+                    closeJobDetailsModal();
+                    loadJobs();
+                } catch (error) {
+                    console.error('Error posting draft job:', error);
+                    alert('Error posting draft job: ' + (error.message || 'Unknown error'));
+                }
+            };
+        } else {
+            jobDetailsPostBtn.classList.add('hidden');
+            jobDetailsPostBtn.onclick = null;
+        }
+    }
     
     // Set delete button handler
     const jobDetailsDeleteBtn = document.getElementById('jobDetailsDeleteBtn');

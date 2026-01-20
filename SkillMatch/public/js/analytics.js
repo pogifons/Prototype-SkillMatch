@@ -64,14 +64,73 @@ function initEmployerInfo() {
 // Start loading employer info immediately
 initEmployerInfo();
 
-// Handle logout button click
+// Load analytics KPIs from backend
+async function loadAnalyticsDashboard() {
+    if (!window.API || !window.API.analytics) return;
+    try {
+        const data = await window.API.analytics.getDashboard();
+
+        const totalViewsEl = document.getElementById('totalViewsValue');
+        const totalApplicationsEl = document.getElementById('totalApplicationsValue');
+        const successfulHiresEl = document.getElementById('successfulHiresValue');
+        const conversionRateEl = document.getElementById('conversionRateValue');
+
+        if (totalViewsEl && typeof data.totalViews === 'number') {
+            totalViewsEl.textContent = data.totalViews.toLocaleString();
+        }
+        if (totalApplicationsEl && typeof data.totalApplications === 'number') {
+            totalApplicationsEl.textContent = data.totalApplications.toLocaleString();
+        }
+        if (successfulHiresEl && typeof data.successfulHires === 'number') {
+            successfulHiresEl.textContent = data.successfulHires.toLocaleString();
+        }
+        if (conversionRateEl && typeof data.conversionRate === 'number') {
+            conversionRateEl.textContent = `${data.conversionRate.toFixed(1)}%`;
+        }
+    } catch (error) {
+        console.error('Error loading analytics dashboard:', error);
+    }
+}
+
+// Wire up Export Report button to download CSV from backend
+function setupExportButton() {
+    if (!window.API || !window.API.analytics) return;
+
+    let targetButton = null;
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((btn) => {
+        if (!targetButton && btn.textContent.trim().includes('Export Report')) {
+            targetButton = btn;
+        }
+    });
+
+    if (!targetButton) return;
+
+    targetButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+            const blob = await window.API.analytics.exportReport('applicants', 'csv');
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `analytics-report-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error exporting report:', error);
+        }
+    });
+}
+
+// Initialize analytics page: logout handling, KPIs, export
 document.addEventListener('DOMContentLoaded', () => {
-    
     const logoutLinks = document.querySelectorAll('a[href="login.html"]');
     logoutLinks.forEach(link => {
         const linkText = link.textContent.trim();
         const hasLogoutIcon = link.querySelector('.fa-sign-out-alt');
-        
+
         if (hasLogoutIcon || linkText.includes('Logout')) {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -85,5 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    loadAnalyticsDashboard();
+    setupExportButton();
 });
 
