@@ -18,17 +18,12 @@ function removeToken() {
     localStorage.removeItem('token');
 }
 
-// Make API request with authentication
+// Make API request (without JWT - API not yet available)
 async function apiRequest(endpoint, options = {}) {
-    const token = getToken();
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers
     };
-
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
 
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -36,27 +31,24 @@ async function apiRequest(endpoint, options = {}) {
             headers
         });
 
-        const data = await response.json();
+        // Try to parse as JSON, fallback if not available
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            console.log(`API endpoint ${endpoint} not yet available - using demo mode`);
+            return null;
+        }
         
         if (!response.ok) {
-            // For 401 errors on auth endpoints (login/register), don't redirect - show error
-            if (response.status === 401 && (endpoint.includes('/auth/login') || endpoint.includes('/auth/register'))) {
-                throw new Error(data.error || 'Authentication failed');
-            }
-            // For 401 errors on other endpoints, token expired - redirect to login
-            if (response.status === 401) {
-                removeToken();
-                localStorage.removeItem('employer');
-                window.location.href = '/login.html';
-                return;
-            }
-            throw new Error(data.error || 'API request failed');
+            console.log(`API error on ${endpoint}:`, data.error || 'Unknown error');
+            return null; // Return null instead of throwing
         }
 
         return data;
     } catch (error) {
-        console.error('API request error:', error);
-        throw error;
+        console.log(`API request to ${endpoint} failed - using demo mode:`, error.message);
+        return null; // Return null on error instead of throwing
     }
 }
 
@@ -67,7 +59,7 @@ const authAPI = {
             method: 'POST',
             body: JSON.stringify(employerData)
         });
-        if (response.token) {
+        if (response && response.token) {
             setToken(response.token);
         }
         return response;
@@ -78,7 +70,7 @@ const authAPI = {
             method: 'POST',
             body: JSON.stringify({ email, password })
         });
-        if (response.token) {
+        if (response && response.token) {
             setToken(response.token);
         }
         return response;

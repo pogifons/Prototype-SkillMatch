@@ -85,10 +85,10 @@
                     <i class="fas fa-cog w-5"></i>
                     <span>Settings</span>
                 </a>
-                <a href="login.html" class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1">
+                <button onclick="handleLogout()" class="w-full text-left flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 bg-none border-none cursor-pointer">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
-                </a>
+                </button>
             </div>
         </nav>
         <div class="p-4 border-t border-gray-200">
@@ -153,7 +153,108 @@
         
         <!-- Jobs Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Jobs will be loaded dynamically here via JavaScript -->
+            <!-- Senior Software Developer -->
+            <div class="bg-white border border-gray-200 rounded-card p-6 hover:shadow-lg transition-shadow cursor-pointer job-card" data-job-id="1">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-blue-600 text-xl"></i>
+                    </div>
+                    <span class="badge badge-green">Active</span>
+                </div>
+                <h3 class="font-semibold text-lg text-gray-900 mb-3">Senior Software Developer</h3>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-building text-teal-600"></i>
+                        <span>Information Technology</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-map-marker-alt text-teal-600"></i>
+                        <span>Quezon City</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-clock text-teal-600"></i>
+                        <span>Full-time</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">React</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Node.js</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">MongoDB</span>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-600"><strong>12</strong> applicants</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI/UX Designer -->
+            <div class="bg-white border border-gray-200 rounded-card p-6 hover:shadow-lg transition-shadow cursor-pointer job-card" data-job-id="2">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-palette text-purple-600 text-xl"></i>
+                    </div>
+                    <span class="badge badge-green">Active</span>
+                </div>
+                <h3 class="font-semibold text-lg text-gray-900 mb-3">UI/UX Designer</h3>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-building text-teal-600"></i>
+                        <span>Design</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-map-marker-alt text-teal-600"></i>
+                        <span>Makati City</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-clock text-teal-600"></i>
+                        <span>Full-time</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Figma</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Prototyping</span>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-600"><strong>8</strong> applicants</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing Manager -->
+            <div class="bg-white border border-gray-200 rounded-card p-6 hover:shadow-lg transition-shadow cursor-pointer job-card" data-job-id="3">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-orange-600 text-xl"></i>
+                    </div>
+                    <span class="badge badge-green">Active</span>
+                </div>
+                <h3 class="font-semibold text-lg text-gray-900 mb-3">Marketing Manager</h3>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-building text-teal-600"></i>
+                        <span>Marketing</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-map-marker-alt text-teal-600"></i>
+                        <span>Pasig City</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fas fa-clock text-teal-600"></i>
+                        <span>Full-time</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Social Media</span>
+                    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">Analytics</span>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-600"><strong>15</strong> applicants</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
     
@@ -298,12 +399,12 @@
                 </form>
             </div>
             <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
-                <button id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">Cancel</button>
-                <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2">
+                <button id="cancelBtn" type="button" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">Cancel</button>
+                <button id="saveDraftBtn" type="button" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2">
                     <i class="fas fa-save"></i>
                     <span>Save as Draft</span>
                 </button>
-                <button class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium flex items-center gap-2">
+                <button id="postJobSubmitBtn" type="button" class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium flex items-center gap-2">
                     <i class="fas fa-paper-plane"></i>
                     <span>Post Job</span>
                 </button>

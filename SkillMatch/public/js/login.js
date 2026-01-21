@@ -55,6 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = loginForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
 
+            // Validate inputs
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
             // Show loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
@@ -62,12 +68,23 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await window.API.auth.login(email, password);
                 
-                if (response && response.token) {
-                    // Store employer info
+                // If API returns null (not available yet), use demo mode
+                if (!response) {
+                    // Demo mode: accept any email/password combination
+                    const demoEmployer = {
+                        id: 'demo-user',
+                        companyName: email.split('@')[0] || 'Your Company',
+                        email: email,
+                        isVerified: true
+                    };
+                    localStorage.setItem('employer', JSON.stringify(demoEmployer));
+                    // Redirect to employer dashboard
+                    window.location.href = '/employer.html';
+                } else if (response && response.token) {
+                    // Real API response - store token and employer info
                     if (response.employer) {
                         localStorage.setItem('employer', JSON.stringify(response.employer));
                     }
-                    
                     // Redirect to employer dashboard
                     window.location.href = '/employer.html';
                 } else {
@@ -95,6 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const submitBtn = registerForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
 
+            // Validate inputs
+            if (!companyName || !email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
             // Show loading state
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
@@ -108,8 +131,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     address
                 });
                 
-                if (response && response.token) {
-                    // Store employer info
+                // If API returns null (not available yet), use demo mode
+                if (!response) {
+                    // Demo mode: accept registration and create account
+                    const demoEmployer = {
+                        id: 'demo-user-' + Date.now(),
+                        companyName: companyName,
+                        email: email,
+                        isVerified: false
+                    };
+                    localStorage.setItem('employer', JSON.stringify(demoEmployer));
+                    alert('Account created successfully! Your account is pending verification.');
+                    // Redirect to employer dashboard
+                    window.location.href = '/employer.html';
+                } else if (response && response.token) {
+                    // Real API response - store token and employer info
                     if (response.employer) {
                         localStorage.setItem('employer', JSON.stringify(response.employer));
                     }

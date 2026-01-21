@@ -69,10 +69,10 @@
                     <i class="fas fa-cog w-5"></i>
                     <span>Settings</span>
                 </a>
-                <a href="login.html" class="flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1">
+                <button onclick="handleLogout()" class="w-full text-left flex items-center gap-3 px-3 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 bg-none border-none cursor-pointer">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Logout</span>
-                </a>
+                </button>
             </div>
         </nav>
         <div class="p-4 border-t border-gray-200">
@@ -186,7 +186,150 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Applicants will be loaded dynamically here via JavaScript -->
+                        <!-- John Dela Cruz - Senior Developer Role -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">JD</div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">John Dela Cruz</div>
+                                        <div class="text-sm text-gray-500">john.delacruz@email.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-gray-700">Senior Software Developer</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                                    <span>Quezon City</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                    <span class="text-sm font-semibold text-green-600">92%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Shortlisted</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-teal-600 hover:text-teal-900 mr-3">View</button>
+                                <button class="text-gray-600 hover:text-gray-900">Schedule</button>
+                            </td>
+                        </tr>
+                        <!-- Maria Santos - Design Role -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">MS</div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">Maria Santos</div>
+                                        <div class="text-sm text-gray-500">maria.santos@email.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-gray-700">UI/UX Designer</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                                    <span>Makati City</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span class="text-sm font-semibold text-green-600">85%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-blue">New</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-teal-600 hover:text-teal-900 mr-3">View</button>
+                                <button class="text-gray-600 hover:text-gray-900">Schedule</button>
+                            </td>
+                        </tr>
+                        <!-- Robert Reyes - Marketing Role -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">RR</div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">Robert Reyes</div>
+                                        <div class="text-sm text-gray-500">robert.reyes@email.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-gray-700">Marketing Manager</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                                    <span>Pasig City</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                    <span class="text-sm font-semibold text-yellow-600">78%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Interview</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-teal-600 hover:text-teal-900 mr-3">View</button>
+                                <button class="text-gray-600 hover:text-gray-900">Schedule</button>
+                            </td>
+                        </tr>
+                        <!-- Lisa Wong - Developer Role -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">LW</div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">Lisa Wong</div>
+                                        <div class="text-sm text-gray-500">lisa.wong@email.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm text-gray-700">Senior Software Developer</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2 text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                                    <span>Taguig City</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 88%"></div>
+                                    </div>
+                                    <span class="text-sm font-semibold text-green-600">88%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Hired</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="text-teal-600 hover:text-teal-900 mr-3">View</button>
+                                <button class="text-gray-600 hover:text-gray-900">Schedule</button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

@@ -1,3 +1,14 @@
+// Logout function
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Destroy JWT token
+        localStorage.removeItem('token');
+        localStorage.removeItem('employer');
+        // Redirect to login
+        window.location.href = '/login.html';
+    }
+}
+
 const newTrainingBtn = document.getElementById('newTrainingBtn');
 const trainingModal = document.getElementById('trainingModal');
 const modalClose = document.getElementById('modalClose');

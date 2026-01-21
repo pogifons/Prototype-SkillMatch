@@ -33,16 +33,33 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// Logout function
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Destroy JWT token
+        localStorage.removeItem('token');
+        localStorage.removeItem('employer');
+        // Redirect to login
+        window.location.href = '/login.html';
+    }
+}
+
 // Load dashboard data
 async function loadDashboard() {
     try {
         const dashboardData = await window.API.employer.getDashboard();
         
+        // If API not available, use demo data
+        if (!dashboardData) {
+            console.log('API not available - using demo mode');
+            return;
+        }
+        
         // Update KPI stats
-        updateKPICard('activeJobs', dashboardData.stats.activeJobs || 0);
-        updateKPICard('newApplicants', dashboardData.stats.newApplicants || 0);
-        updateKPICard('interviews', dashboardData.stats.interviewsScheduled || 0);
-        updateKPICard('aiMatch', dashboardData.stats.aiMatchAccuracy || 0, '%');
+        updateKPICard('activeJobs', dashboardData.stats?.activeJobs || 0);
+        updateKPICard('newApplicants', dashboardData.stats?.newApplicants || 0);
+        updateKPICard('interviews', dashboardData.stats?.interviewsScheduled || 0);
+        updateKPICard('aiMatch', dashboardData.stats?.aiMatchAccuracy || 0, '%');
         
         // Update recent applicants
         if (dashboardData.recentApplicants && dashboardData.recentApplicants.length > 0) {
