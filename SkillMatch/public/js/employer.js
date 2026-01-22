@@ -33,61 +33,75 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Load dashboard data
+// Load dashboard data with dummy data matching the image
 async function loadDashboard() {
     try {
-        const dashboardData = await window.API.employer.getDashboard();
+        // Use dummy data that matches the image
+        const dummyDashboardData = {
+            stats: {
+                activeJobs: 24,
+                newApplicants: 156,
+                interviewsScheduled: 18,
+                aiMatchAccuracy: 89
+            },
+            recentApplicants: [
+                {
+                    firstName: 'Juan',
+                    lastName: 'Carlos Rivera',
+                    email: 'juan.rivera@email.com',
+                    location: 'Quezon City',
+                    experience: [{ yearsOfExperience: 5 }],
+                    applications: [{
+                        jobId: { title: 'Senior Software Developer' },
+                        matchScore: 94
+                    }]
+                },
+                {
+                    firstName: 'Maria',
+                    lastName: 'Angela Santos',
+                    email: 'maria.santos@email.com',
+                    location: 'Makati City',
+                    experience: [{ yearsOfExperience: 3 }],
+                    applications: [{
+                        jobId: { title: 'UI/UX Designer' },
+                        matchScore: 88
+                    }]
+                }
+            ]
+        };
         
-        // Update KPI stats
-        updateKPICard('activeJobs', dashboardData.stats.activeJobs || 0);
-        updateKPICard('newApplicants', dashboardData.stats.newApplicants || 0);
-        updateKPICard('interviews', dashboardData.stats.interviewsScheduled || 0);
-        updateKPICard('aiMatch', dashboardData.stats.aiMatchAccuracy || 0, '%');
+        // Update KPI stats with dummy data
+        updateKPICard('activeJobs', dummyDashboardData.stats.activeJobs);
+        updateKPICard('newApplicants', dummyDashboardData.stats.newApplicants);
+        updateKPICard('interviews', dummyDashboardData.stats.interviewsScheduled);
+        updateKPICard('aiMatch', dummyDashboardData.stats.aiMatchAccuracy, '%');
         
-        // Update recent applicants
-        if (dashboardData.recentApplicants && dashboardData.recentApplicants.length > 0) {
-            renderRecentApplicants(dashboardData.recentApplicants);
-        } else {
-            document.querySelector('table[aria-label="Recent applicants"] tbody').innerHTML = 
-                '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No applicants yet</td></tr>';
-        }
+        // The HTML already has the dummy applicants, so we don't need to replace them
+        // But if we want to ensure they're displayed, we can render them
+        // renderRecentApplicants(dummyDashboardData.recentApplicants);
         
-        // Update recent jobs
-        if (dashboardData.recentJobs && dashboardData.recentJobs.length > 0) {
-            renderRecentJobs(dashboardData.recentJobs);
-        } else {
-            document.querySelector('table[aria-label="Recent job postings"] tbody').innerHTML = 
-                '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No job postings yet</td></tr>';
-        }
-        
-        // Update welcome message with employer username/name
+        // Keep welcome message as "Welcome back" (matching the image)
+        // Update user card with employer name if available
         const employer = JSON.parse(localStorage.getItem('employer') || '{}');
-        if (employer) {
-            // Get employer name - prefer companyName, fallback to email username
-            const employerName = employer.companyName || 
-                                (employer.email ? employer.email.split('@')[0] : 'User');
-            
-            const welcomeHeading = document.querySelector('header h1.font-serif');
-            if (welcomeHeading) {
-                welcomeHeading.textContent = `Welcome back, ${employerName}`;
+        if (employer && employer.companyName) {
+            const userCardName = document.getElementById('employerName');
+            if (userCardName) {
+                userCardName.textContent = employer.companyName;
             }
-            
-            // Update user card with employer name
-            if (employer.companyName) {
-                const userCardName = document.getElementById('employerName');
-                if (userCardName) {
-                    userCardName.textContent = employer.companyName;
-                }
-                // Update initials in user card
-                const initials = employer.companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const initialsElement = document.getElementById('employerInitials');
-                if (initialsElement) {
-                    initialsElement.textContent = initials;
-                }
+            // Update initials in user card
+            const initials = employer.companyName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            const initialsElement = document.getElementById('employerInitials');
+            if (initialsElement) {
+                initialsElement.textContent = initials;
             }
         }
     } catch (error) {
         console.error('Error loading dashboard:', error);
+        // Even on error, ensure dummy data is displayed
+        updateKPICard('activeJobs', 24);
+        updateKPICard('newApplicants', 156);
+        updateKPICard('interviews', 18);
+        updateKPICard('aiMatch', 89, '%');
     }
 }
 

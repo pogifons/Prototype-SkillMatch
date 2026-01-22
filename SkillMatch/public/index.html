@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMatch | AI-Powered Job & Skills Matching Portal</title>
+    <meta name="description" content="SkillMatch - Connect employers with qualified candidates through intelligent AI-powered matching">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0f172a',
+                        teal: '#14b8a6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'Georgia', 'serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="css/front.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .section-padding {
+            padding: 80px 0;
+        }
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <img src="/logo/SkillMatch%20Logo1.png" alt="SkillMatch Logo" class="h-12 w-auto object-contain">
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Home</a>
+                    <a href="#about" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">About Us</a>
+                    <a href="#work" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Our Work</a>
+                    <a href="#partners" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Our Partners</a>
+                    <a href="#contact" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Contact</a>
+                    <a href="/login.html" class="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-colors">Login</a>
+                </div>
+                <button class="md:hidden text-gray-700 hover:text-teal-600" id="mobile-menu-btn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-white border-t" id="mobile-menu">
+            <div class="px-4 py-4 space-y-4">
+                <a href="#home" class="block text-gray-700 hover:text-teal-600 font-medium">Home</a>
+                <a href="#about" class="block text-gray-700 hover:text-teal-600 font-medium">About Us</a>
+                <a href="#work" class="block text-gray-700 hover:text-teal-600 font-medium">Our Work</a>
+                <a href="#partners" class="block text-gray-700 hover:text-teal-600 font-medium">Our Partners</a>
+                <a href="#contact" class="block text-gray-700 hover:text-teal-600 font-medium">Contact</a>
+                <a href="/login.html" class="block px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium text-center">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-navy via-navy to-teal-900 overflow-hidden pt-20">
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-teal-600 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-teal-400 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <div class="mb-8">
+                <img src="/logo/SkillMatch%20Logo1.png" alt="SkillMatch Logo" class="h-48 w-auto object-contain mx-auto">
+            </div>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                AI-Powered Job & Skills<br/>
+                <span class="text-teal-400">Matching Portal</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Connect with qualified candidates through our intelligent matching system. 
+                Leverage prescriptive analytics to make data-driven hiring decisions.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/login.html" class="px-8 py-4 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
+                    Get Started
+                </a>
+                <a href="#about" class="px-8 py-4 bg-white bg-opacity-10 backdrop-blur-sm text-white rounded-lg hover:bg-opacity-20 font-semibold text-lg transition-all border border-white border-opacity-30">
+                    Learn More
+                </a>
+            </div>
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
+                    <div class="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">AI-Powered Matching</h3>
+                    <p class="text-gray-300 text-sm">Smart algorithms match candidates to your requirements</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
+                    <div class="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Prescriptive Analytics</h3>
+                    <p class="text-gray-300 text-sm">Data-driven insights for better hiring decisions</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-6 border border-white border-opacity-20">
+                    <div class="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Quality Candidates</h3>
+                    <p class="text-gray-300 text-sm">Access to a pool of skilled and qualified professionals</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="section-padding bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-navy mb-4">About Us</h2>
+                <div class="w-24 h-1 bg-teal-600 mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    SkillMatch is revolutionizing the way employers connect with talent
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-3xl font-bold text-navy mb-6">Our Mission</h3>
+                    <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                        At SkillMatch, we believe that finding the right talent should be efficient, intelligent, and data-driven. 
+                        Our platform leverages cutting-edge AI technology to match employers with candidates who not only meet 
+                        the job requirements but also align with company culture and values.
+                    </p>
+                    <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                        We're committed to transforming the recruitment process by providing prescriptive analytics that help 
+                        employers make informed hiring decisions, reduce time-to-hire, and improve candidate quality.
+                    </p>
+                    <p class="text-gray-700 text-lg leading-relaxed">
+                        Our goal is to bridge the gap between employers and skilled professionals, creating meaningful 
+                        connections that drive business success.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-xl p-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bullseye text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy text-lg mb-2">Our Vision</h4>
+                                <p class="text-gray-600">To become the leading AI-powered recruitment platform that transforms how businesses find and hire talent.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-heart text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy text-lg mb-2">Our Values</h4>
+                                <p class="text-gray-600">Innovation, integrity, and excellence drive everything we do. We're committed to delivering value to both employers and job seekers.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-trophy text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy text-lg mb-2">Our Impact</h4>
+                                <p class="text-gray-600">Helping thousands of employers find the right candidates faster, while empowering job seekers to showcase their skills effectively.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Work Section -->
+    <section id="work" class="section-padding bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-navy mb-4">Our Work</h2>
+                <div class="w-24 h-1 bg-teal-600 mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Discover how SkillMatch is transforming recruitment through innovative technology
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-teal-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-search text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Smart Candidate Matching</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Our AI algorithms analyze candidate profiles, skills, and experience to provide the most accurate matches for your job postings.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-bar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Analytics Dashboard</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Comprehensive analytics and insights help you understand hiring trends, candidate quality, and recruitment performance metrics.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Training & Assessment</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Assign training programs and assessments to candidates, track their progress, and identify skill development opportunities.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-briefcase text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Job Management</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Create, manage, and track job postings with ease. Organize applications and streamline your hiring workflow.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-orange-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-user-check text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Applicant Management</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Efficiently manage applicant pipelines, track status updates, add notes, and communicate with candidates all in one place.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow">
+                    <div class="w-16 h-16 bg-pink-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-navy mb-4">Secure & Reliable</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        Enterprise-grade security ensures your data and candidate information are protected with industry-standard encryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile App Download Section -->
+    <section class="section-padding bg-gradient-to-br from-teal-600 via-teal-700 to-navy relative overflow-hidden" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #0f172a 100%);">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-6">
+                <i class="fas fa-mobile-alt text-white text-6xl mb-4"></i>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6" style="color: #ffffff;">
+                Looking for a job? We've got you—download our app now!
+            </h2>
+            <p class="text-xl mb-10 max-w-2xl mx-auto" style="color: #ccfbf1;">
+                Take your job search on the go. Browse opportunities, apply instantly, and get matched with employers—all from your mobile device.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#" class="inline-flex items-center gap-3 px-8 py-4 bg-white text-navy rounded-lg hover:bg-gray-100 font-semibold text-lg transition-all transform hover:scale-105 shadow-xl">
+                    <i class="fab fa-apple text-3xl"></i>
+                    <div class="text-left">
+                        <div class="text-xs text-gray-600">Download on the</div>
+                        <div class="text-xl font-bold">App Store</div>
+                    </div>
+                </a>
+                <a href="#" class="inline-flex items-center gap-3 px-8 py-4 bg-white text-navy rounded-lg hover:bg-gray-100 font-semibold text-lg transition-all transform hover:scale-105 shadow-xl">
+                    <i class="fab fa-google-play text-3xl"></i>
+                    <div class="text-left">
+                        <div class="text-xs text-gray-600">Get it on</div>
+                        <div class="text-xl font-bold">Google Play</div>
+                    </div>
+                </a>
+            </div>
+            <div class="mt-8 flex justify-center gap-6 text-sm" style="color: #ffffff;">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle" style="color: #5eead4;"></i>
+                    <span>Free to download</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle" style="color: #5eead4;"></i>
+                    <span>Available on iOS & Android</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Partners Section -->
+    <section id="partners" class="section-padding bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-navy mb-4">Our Partners</h2>
+                <div class="w-24 h-1 bg-teal-600 mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    We're proud to collaborate with leading organizations to deliver exceptional value
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <!-- TESDA Partner -->
+                <div class="bg-white rounded-lg shadow-xl p-8 hover:shadow-2xl transition-shadow">
+                    <div class="text-center mb-6">
+                        <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-building text-blue-600 text-4xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-navy mb-2">TESDA</h3>
+                        <p class="text-teal-600 font-semibold">Technical Education and Skills Development Authority</p>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed text-center">
+                        Partnering with TESDA to provide quality technical education and skills development programs. 
+                        Together, we're bridging the gap between education and employment, ensuring candidates have 
+                        the skills needed to succeed in today's job market.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="flex items-center justify-center gap-2 text-gray-600">
+                            <i class="fas fa-check-circle text-teal-600"></i>
+                            <span class="text-sm">Certified Training Programs</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- ExeGen Partner -->
+                <div class="bg-white rounded-lg shadow-xl p-8 hover:shadow-2xl transition-shadow">
+                    <div class="text-center mb-6">
+                        <div class="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-handshake text-purple-600 text-4xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold text-navy mb-2">ExeGen</h3>
+                        <p class="text-teal-600 font-semibold">Executive Generation Solutions</p>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed text-center">
+                        Collaborating with ExeGen to deliver executive-level recruitment solutions and leadership 
+                        development programs. Our partnership focuses on connecting top-tier talent with organizations 
+                        seeking exceptional leadership and management expertise.
+                    </p>
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="flex items-center justify-center gap-2 text-gray-600">
+                            <i class="fas fa-check-circle text-teal-600"></i>
+                            <span class="text-sm">Executive Talent Network</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-4">Interested in partnering with us?</p>
+                <a href="#contact" class="inline-block px-8 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold transition-colors">
+                    Get in Touch
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-navy mb-4">Contact Us</h2>
+                <div class="w-24 h-1 bg-teal-600 mx-auto mb-6"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold text-navy mb-6">Get in Touch</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy mb-1">Address</h4>
+                                <p class="text-gray-600">123 Business District<br>Metro Manila, Philippines 1000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy mb-1">Phone</h4>
+                                <p class="text-gray-600">+63 (2) 1234-5678</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy mb-1">Email</h4>
+                                <p class="text-gray-600">info@skillmatch.com<br>support@skillmatch.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-clock text-teal-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-navy mb-1">Business Hours</h4>
+                                <p class="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 1:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-8 border-t border-gray-200">
+                        <h4 class="font-semibold text-navy mb-4">Follow Us</h4>
+                        <div class="flex gap-4">
+                            <a href="#" class="w-10 h-10 bg-teal-600 text-white rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-teal-600 text-white rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-teal-600 text-white rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-teal-600 text-white rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-8">
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-navy mb-2">Name</label>
+                            <input type="text" id="name" name="name" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none transition">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-navy mb-2">Email</label>
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none transition">
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-sm font-semibold text-navy mb-2">Subject</label>
+                            <input type="text" id="subject" name="subject" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none transition">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-navy mb-2">Message</label>
+                            <textarea id="message" name="message" rows="6" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-600 focus:border-teal-600 outline-none transition resize-none"></textarea>
+                        </div>
+                        <button type="submit" 
+                            class="w-full px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-semibold transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-navy text-white py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="mb-4">
+                        <img src="/logo/SkillMatch%20Logo1.png" alt="SkillMatch Logo" class="h-12 w-auto object-contain">
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        AI-Powered Job & Skills Matching Portal connecting employers with qualified candidates.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#home" class="hover:text-teal-400 transition-colors">Home</a></li>
+                        <li><a href="#about" class="hover:text-teal-400 transition-colors">About Us</a></li>
+                        <li><a href="#work" class="hover:text-teal-400 transition-colors">Our Work</a></li>
+                        <li><a href="#partners" class="hover:text-teal-400 transition-colors">Our Partners</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/login.html" class="hover:text-teal-400 transition-colors">Login</a></li>
+                        <li><a href="#contact" class="hover:text-teal-400 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex gap-4 mb-4">
+                        <a href="#" class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400 text-sm">© 2024 SkillMatch. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href !== '#home') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const offsetTop = target.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                        // Close mobile menu if open
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Contact form handling
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(contactForm);
+                const data = Object.fromEntries(formData);
+                
+                // Here you would typically send the data to your backend
+                alert('Thank you for your message! We will get back to you soon.');
+                contactForm.reset();
+            });
+        }
+    </script>
+</body>
+</html>

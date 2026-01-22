@@ -7,45 +7,86 @@ const { verifyToken } = require('./auth');
 
 // Compute skill match score for an applicant and job
 function computeSkillMatchScore(applicant, job) {
-    if (!job.requiredSkills || job.requiredSkills.length === 0) {
-        return 0;
+    if (!job?.requiredSkills || job.requiredSkills.length === 0) return 0;
+
+    const requiredSkills = (job.requiredSkills || [])
+        .map(s => String(s || '').trim())
+        .filter(Boolean);
+    if (requiredSkills.length === 0) return 0;
+
+    const applicantSkillRows = (applicant?.skills || []).map((s) => ({
+        raw: String(s?.skill || ''),
+        norm: String(s?.skill || '').toLowerCase(),
+        level: s?.level,
+        years: Number(s?.yearsOfExperience || 0)
+    }));
+
+    // simple matching: exact OR token/substring match (handles "JavaScript/React" vs "React")
+    function hasSkill(requiredSkill) {
+        const req = String(requiredSkill || '').toLowerCase();
+        if (!req) return null;
+        // exact
+        const exact = applicantSkillRows.find(r => r.norm === req);
+        if (exact) return exact;
+        // substring / token split
+        const tokenMatch = applicantSkillRows.find(r => {
+            if (!r.norm) return false;
+            if (r.norm.includes(req) || req.includes(r.norm)) return true;
+            const tokens = r.norm.split(/[^a-z0-9]+/i).filter(Boolean);
+            return tokens.includes(req);
+        });
+        return tokenMatch || null;
     }
-    
-    const applicantSkills = new Set(
-        applicant.skills.map(s => s.skill.toLowerCase())
-    );
-    
-    const requiredSkills = job.requiredSkills.map(s => s.toLowerCase());
-    const matchedSkills = requiredSkills.filter(skill => 
-        applicantSkills.has(skill)
-    );
-    
-    // Calculate percentage match
-    const matchPercentage = (matchedSkills.length / requiredSkills.length) * 100;
-    
-    // Bonus for experience level match
+
+    const levelWeight = (level) => {
+        const l = String(level || '').toLowerCase();
+        if (l === 'expert') return 1.0;
+        if (l === 'advanced') return 0.85;
+        if (l === 'intermediate') return 0.7;
+        if (l === 'basic') return 0.55;
+        return 0.65;
+    };
+
+    const yearsWeight = (years) => {
+        // cap at 8 yrs; 0 yrs => 0.6, 8+ yrs => 1.0
+        const y = Math.max(0, Math.min(8, Number(years || 0)));
+        return 0.6 + (y / 8) * 0.4;
+    };
+
+    // Skill score: each required skill contributes up to 1.0 (weighted by level+years)
+    let totalSkillScore = 0;
+    requiredSkills.forEach((req) => {
+        const found = hasSkill(req);
+        if (!found) return;
+        totalSkillScore += levelWeight(found.level) * yearsWeight(found.years);
+    });
+
+    const base = (totalSkillScore / requiredSkills.length) * 100;
+
+    // Experience weighting based on overall work history
     let experienceBonus = 0;
     if (job.experienceLevel && applicant.experience && applicant.experience.length > 0) {
         const applicantYears = applicant.experience.reduce((sum, exp) => {
             const start = new Date(exp.startDate);
             const end = exp.endDate ? new Date(exp.endDate) : new Date();
             const years = (end - start) / (1000 * 60 * 60 * 24 * 365);
-            return sum + years;
+            return sum + (Number.isFinite(years) ? years : 0);
         }, 0);
-        
-        const requiredYears = {
-            'entry': 0,
-            'mid': 3,
-            'senior': 7,
-            'lead': 10
-        };
-        
-        if (applicantYears >= requiredYears[job.experienceLevel]) {
-            experienceBonus = 10;
+
+        const requiredYears = { entry: 0, mid: 3, senior: 7, lead: 10 };
+        const need = requiredYears[job.experienceLevel] ?? 0;
+
+        // up to +15: meeting requirement gives +10, exceeding gives up to +5 more
+        if (applicantYears >= need) {
+            const extra = Math.min(5, Math.max(0, applicantYears - need) * 0.75);
+            experienceBonus = 10 + extra;
+        } else if (need > 0) {
+            // partial credit if close
+            experienceBonus = Math.max(0, (applicantYears / need) * 6);
         }
     }
-    
-    return Math.min(100, Math.round(matchPercentage + experienceBonus));
+
+    return Math.min(100, Math.round(base + experienceBonus));
 }
 
 // Get all applicants for employer's jobs

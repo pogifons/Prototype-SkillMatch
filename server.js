@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'SkillMatch', 'public')));
 app.use('/css', express.static(path.join(__dirname, 'SkillMatch', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'SkillMatch', 'public', 'js')));
+app.use('/logo', express.static(path.join(__dirname, 'SkillMatch', 'logo')));
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://skillmatchdb:5killm4tch@skillmatch-cluster.rt9ysnv.mongodb.net/SkillMatch?retryWrites=true&w=majority';
@@ -48,7 +49,7 @@ app.use('/api/analytics', analyticsRoutes);
 
 // Serve HTML files (these routes take precedence over static files)
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'SkillMatch', 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'SkillMatch', 'public', 'index.html'));
 });
 
 app.get('/login.html', (req, res) => {

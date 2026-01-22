@@ -1,0 +1,181 @@
+/* ===== Job Seeker Hero (similar to screenshot) ===== */
+.js-hero {
+    position: relative;
+    min-height: 80vh;
+    width: 100%;
+    background: #3b97f4; /* screenshot-like blue */
+    overflow: hidden;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    padding: 80px 18px;
+    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  }
+  
+  /* subtle glow blobs like the screenshot vibe */
+  .js-hero::before,
+  .js-hero::after {
+    content: "";
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+    z-index: 0;
+  }
+  .js-hero::before {
+    top: -140px;
+    left: -140px;
+    background: #ffffff;
+  }
+  .js-hero::after {
+    bottom: -160px;
+    right: -160px;
+    background: #ffffff;
+  }
+  
+  .js-hero__content {
+    position: relative;
+    z-index: 1;
+    width: min(980px, 100%);
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  /* Big quote */
+  .js-hero__title {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  
+    font-size: clamp(2.4rem, 5vw, 4.5rem); /* responsive like screenshot */
+  }
+  
+  /* Source/meta line */
+  .js-hero__meta {
+    margin-top: 16px;
+    font-weight: 700;
+    opacity: 0.92;
+    font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+  }
+  
+  /* Description text */
+  .js-hero__desc {
+    margin: 48px auto 0;
+    width: min(820px, 100%);
+    line-height: 1.8;
+    font-weight: 500;
+    opacity: 0.92;
+  
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+  }
+  
+  /* CTA Button */
+  .js-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-top: 44px;
+    padding: 18px 44px;
+    border-radius: 999px;
+  
+    background: #f9c40f; /* screenshot yellow */
+    color: #0f172a;
+    font-weight: 800;
+    letter-spacing: 0.18em; /* spaced text like "A p p l y..." */
+    text-transform: none;
+    text-decoration: none;
+  
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+  
+  .js-hero__btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+  
+  /* Arrows */
+  .js-hero__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+  
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 46px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+  
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  
+  .js-hero__arrow:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 1);
+  }
+  
+  .js-hero__arrow--left {
+    left: 18px;
+  }
+  
+  .js-hero__arrow--right {
+    right: 18px;
+  }
+  
+  /* Dots */
+  .js-hero__dots {
+    margin-top: 22px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .js-hero__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+  
+  .js-hero__dot--active {
+    background: rgba(255, 255, 255, 1);
+  }
+  
+  /* Mobile spacing adjustments */
+  @media (max-width: 480px) {
+    .js-hero {
+      padding: 70px 16px;
+      min-height: 78vh;
+    }
+  
+    .js-hero__desc {
+      margin-top: 34px;
+    }
+  
+    .js-hero__btn {
+      padding: 16px 34px;
+      letter-spacing: 0.14em;
+    }
+  
+    .js-hero__arrow {
+      width: 46px;
+      height: 46px;
+      font-size: 40px;
+    }
+  }
+  
