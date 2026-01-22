@@ -1,73 +1,133 @@
-const postJobBtn = document.getElementById('postJobBtn');
-const jobModal = document.getElementById('jobModal');
-const modalClose = document.getElementById('modalClose');
-const cancelBtn = document.getElementById('cancelBtn');
-const skillsInput = document.getElementById('skillsInput');
-const skillInput = skillsInput.querySelector('input');
-const aiSuggestions = document.getElementById('aiSuggestions');
-const jobForm = document.querySelector('#jobModal form');
-const jobModalTitle = document.querySelector('#jobModal h2');
+// Logout function
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Destroy JWT token
+        localStorage.removeItem('token');
+        localStorage.removeItem('employer');
+        // Redirect to login
+        window.location.href = '/login.html';
+    }
+}
 
-// Track whether we're creating a new job or editing an existing one
+// Track whether we're creating a new job or editing an existing one (global scope)
 let currentJobId = null;
 
-function openJobModalForCreate() {
-    currentJobId = null;
-    if (jobForm) {
-        jobForm.reset();
+// Wait for DOM to be ready before attaching event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const postJobBtn = document.getElementById('postJobBtn');
+    const jobModal = document.getElementById('jobModal');
+    const modalClose = document.getElementById('modalClose');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const skillsInput = document.getElementById('skillsInput');
+    const skillInput = skillsInput ? skillsInput.querySelector('input') : null;
+    const aiSuggestions = document.getElementById('aiSuggestions');
+    const jobForm = document.querySelector('#jobModal form');
+    const jobModalTitle = document.querySelector('#jobModal h2');
+
+    if (!postJobBtn || !jobModal) {
+        console.error('Required elements not found in DOM');
+        return;
     }
-    // Clear existing skill tags (except the input)
-    document.querySelectorAll('#skillsInput .skill-tag').forEach(tag => {
-        if (!tag.querySelector('input')) tag.remove();
-    });
-    if (jobModalTitle) {
-        jobModalTitle.textContent = 'Create New Job Posting';
-    }
-    jobModal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
 
-postJobBtn.addEventListener('click', openJobModalForCreate);
+    // Get the submit buttons
+    const saveDraftBtn = document.getElementById('saveDraftBtn');
+    const postJobSubmitBtn = document.getElementById('postJobSubmitBtn');
 
-function closeModal() {
-    jobModal.classList.remove('open');
-    document.body.style.overflow = '';
-}
-
-modalClose.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-jobModal.addEventListener('click', (e) => {
-    if (e.target === jobModal) closeModal();
-});
-
-skillInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        const value = skillInput.value.trim();
-        if (value) {
-            const tag = document.createElement('span');
-            tag.className = 'skill-tag';
-            tag.innerHTML = `${value} <button type="button">&times;</button>`;
-            skillsInput.insertBefore(tag, skillInput);
-            skillInput.value = '';
-            tag.querySelector('button').addEventListener('click', () => tag.remove());
+    function openJobModalForCreate() {
+        currentJobId = null;
+        if (jobForm) {
+            jobForm.reset();
         }
+        // Clear existing skill tags (except the input)
+        document.querySelectorAll('#skillsInput .skill-tag').forEach(tag => {
+            if (!tag.querySelector('input')) tag.remove();
+        });
+        if (jobModalTitle) {
+            jobModalTitle.textContent = 'Create New Job Posting';
+        }
+        jobModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
     }
-});
 
-document.querySelectorAll('.skill-tag button').forEach(btn => {
-    btn.addEventListener('click', () => btn.parentElement.remove());
-});
+    postJobBtn.addEventListener('click', openJobModalForCreate);
 
-aiSuggestions.querySelectorAll('span').forEach(tag => {
-    tag.addEventListener('click', () => {
-        const skillTag = document.createElement('span');
-        skillTag.className = 'skill-tag';
-        skillTag.innerHTML = `${tag.textContent} <button type="button">&times;</button>`;
-        skillsInput.insertBefore(skillTag, skillsInput);
-        tag.remove();
-        skillTag.querySelector('button').addEventListener('click', () => skillTag.remove());
+    function closeModal() {
+        jobModal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    jobModal.addEventListener('click', (e) => {
+        if (e.target === jobModal) closeModal();
     });
+
+    if (skillInput) {
+        skillInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const value = skillInput.value.trim();
+                if (value) {
+                    const tag = document.createElement('span');
+                    tag.className = 'skill-tag';
+                    tag.innerHTML = `${value} <button type="button">&times;</button>`;
+                    skillsInput.insertBefore(tag, skillInput);
+                    skillInput.value = '';
+                    tag.querySelector('button').addEventListener('click', () => tag.remove());
+                }
+            }
+        });
+    }
+
+    document.querySelectorAll('.skill-tag button').forEach(btn => {
+        btn.addEventListener('click', () => btn.parentElement.remove());
+    });
+
+    if (aiSuggestions) {
+        aiSuggestions.querySelectorAll('span').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.innerHTML = `${tag.textContent} <button type="button">&times;</button>`;
+                if (skillsInput) {
+                    skillsInput.insertBefore(skillTag, skillInput || skillsInput.lastChild);
+                }
+                tag.remove();
+                skillTag.querySelector('button').addEventListener('click', () => skillTag.remove());
+            });
+        });
+    }
+
+    // Handle Save as Draft button
+    if (saveDraftBtn) {
+        saveDraftBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('Save as Draft clicked');
+            const formData = new FormData(jobForm);
+            const skills = Array.from(document.querySelectorAll('#skillsInput .skill-tag')).map(tag => tag.textContent.trim().replace('×', '').trim());
+            const data = Object.fromEntries(formData);
+            data.requiredSkills = skills;
+            data.status = 'draft';
+            console.log('Draft data:', data);
+            closeModal();
+        });
+    }
+
+    // Handle Post Job button
+    if (postJobSubmitBtn) {
+        postJobSubmitBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('Post Job clicked');
+            if (jobForm) {
+                jobForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    }
+
+    // Handle job form submission
+    if (jobForm) {
+        jobForm.addEventListener('submit', handleJobSubmit);
+    }
 });
 
 // Load jobs from database
@@ -113,13 +173,9 @@ function renderJobs(jobs) {
     
     console.log('Rendering jobs to container:', container);
     
-    if (jobs.length === 0) {
-        console.log('No jobs to display');
-        if (tbody) {
-            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No job postings yet. Click "Post New Job" to create one.</td></tr>';
-        } else if (gridContainer) {
-            gridContainer.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No job postings yet. Click "Post New Job" to create one.</div>';
-        }
+    // Handle null/undefined jobs (demo mode)
+    if (!jobs || jobs.length === 0) {
+        console.log('No jobs from API - showing placeholders');
         return;
     }
     
@@ -218,6 +274,12 @@ function renderJobs(jobs) {
 }
 
 function updateJobStats(jobs) {
+    // Handle null/undefined jobs (demo mode)
+    if (!jobs || !Array.isArray(jobs)) {
+        console.log('No jobs data to update stats');
+        return;
+    }
+    
     const activeJobs = jobs.filter(j => j.status === 'active').length;
     const totalJobs = jobs.length;
     const totalApplicants = jobs.reduce((sum, job) => sum + (job.applications?.length || 0), 0);
@@ -708,24 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.API && window.API.jobs) {
         loadJobs();
     }
-    
-    // Handle job form submission
-    const jobForm = document.querySelector('#jobModal form');
-    const postJobBtn = document.querySelector('#jobModal button.bg-teal-600');
-    
-    if (jobForm) {
-        jobForm.addEventListener('submit', handleJobSubmit);
-    }
-    
-    if (postJobBtn) {
-        postJobBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (jobForm) {
-                handleJobSubmit(e);
-            }
-        });
-    }
-    
+
     const logoutLinks = document.querySelectorAll('a[href="login.html"]');
     logoutLinks.forEach(link => {
         const linkText = link.textContent.trim();

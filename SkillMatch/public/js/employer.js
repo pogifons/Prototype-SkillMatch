@@ -33,6 +33,17 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// Logout function
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Destroy JWT token
+        localStorage.removeItem('token');
+        localStorage.removeItem('employer');
+        // Redirect to login
+        window.location.href = '/login.html';
+    }
+}
+
 // Load dashboard data with dummy data matching the image
 async function loadDashboard() {
     try {
